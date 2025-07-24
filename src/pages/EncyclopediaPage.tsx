@@ -8,7 +8,7 @@ import { provinceInfo, kodeToId } from "../data/provinceInfo";
 
 import CultureEntryList from "../components/CultureEntryCard";
 import cultureEntries from "../data/CultureEntries.json";
-
+import type { CultureEntry } from "@/interfaces/cultureentry-type";
 
 export default function EncyclopediaPage() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -18,6 +18,10 @@ export default function EncyclopediaPage() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedProvince, setSelectedProvince] = useState<any>(null);
+  const [selectedEntry, setSelectedEntry] = useState<CultureEntry | null>(null);
+
+
+  console.log(selectedEntry)
 
   // Styles
   const getDefaultStyle = (): L.PathOptions => ({
@@ -289,9 +293,41 @@ export default function EncyclopediaPage() {
 
         <div className="mt-12">
           <h2 className="text-3xl font-bold mb-4">Entri Terkait</h2>
-          <CultureEntryList entries={filteredEntries} />
+          <CultureEntryList entries={filteredEntries} onEntryClick={setSelectedEntry}/>
         </div>
       </div>
+
+      {selectedEntry && (
+        <div className="fixed inset-0 z-999 bg-black/50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full relative shadow-lg">
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+              onClick={() => setSelectedEntry(null)}
+            >
+              ✕
+            </button>
+            <h2 className="text-2xl font-bold mb-2">{selectedEntry.title}</h2>
+            <p className="text-sm text-gray-600 mb-1">
+              {selectedEntry.type} — {selectedEntry.province}
+            </p>
+            {selectedEntry.image && (
+              <img
+                src="https://picsum.photos/400/300?random"
+                alt={selectedEntry.title}
+                className="rounded-lg mb-3"
+              />
+            )}
+            <p className="text-gray-700 whitespace-pre-line mb-3">
+              {selectedEntry.description}
+            </p>
+            {selectedEntry.author && (
+              <p className="text-xs text-gray-500 mt-2">
+                👤 {selectedEntry.author}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

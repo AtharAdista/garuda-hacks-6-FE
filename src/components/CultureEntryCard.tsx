@@ -2,8 +2,10 @@ import type { CultureEntry } from "@/interfaces/cultureentry-type";
 
 export default function CultureEntryList({
   entries,
+  onEntryClick,
 }: {
   entries: CultureEntry[];
+  onEntryClick?: (entry: CultureEntry) => void;
 }) {
   if (!entries.length) {
     return (
@@ -17,6 +19,7 @@ export default function CultureEntryList({
       {entries.map((entry) => (
         <div
           key={entry.id}
+          onClick={() => onEntryClick?.(entry)}
           className="bg-white rounded-xl shadow p-4 flex flex-col"
         >
           {entry.image ? (

@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const SOCKET_URL = "http://localhost:8000";
+const SOCKET_URL = import.meta.env.VITE_BACKEND_URL;
 
 interface Player {
   id: string;
@@ -53,11 +52,13 @@ export default function RoomPage() {
 
     const handleRoomData = ({ roomId, players: roomPlayers }: any) => {
       console.log("Room data received:", roomId, roomPlayers);
-      const playerArray = Object.entries(roomPlayers).map(([userId, playerData]: [string, any]) => ({
-        id: userId,
-        username: playerData.userId, // or fetch username from your user data
-        health: playerData.health
-      }));
+      const playerArray = Object.entries(roomPlayers).map(
+        ([userId, playerData]: [string, any]) => ({
+          id: userId,
+          username: playerData.userId, // or fetch username from your user data
+          health: playerData.health,
+        })
+      );
       setPlayers(playerArray);
     };
 
@@ -101,7 +102,7 @@ export default function RoomPage() {
   }, [roomId, playerId, isCreator, navigate]);
 
   return (
-    <div>
+    <div className="m-24">
       <h2>Room ID: {roomId}</h2>
       <h3>Connection Status: {isConnected ? "Connected" : "Disconnected"}</h3>
       <h3>Player List ({players.length} players):</h3>
@@ -112,6 +113,15 @@ export default function RoomPage() {
           </li>
         ))}
       </ul>
+
+      {players.length == 2 && (
+        <button
+          onClick={() => console.log("Game started")}
+          className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Start Game
+        </button>
+      )}
       {players.length === 0 && <p>Loading players...</p>}
     </div>
   );
