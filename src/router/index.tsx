@@ -3,6 +3,7 @@ import App from "../App";
 import Game from "../pages/GamePage";
 import LoginForm from "@/features/auth/LoginForm";
 import RegisterForm from "@/features/auth/RegisterForm";
+import RoomPage from "@/pages/RoomPage";
 
 function Encyclopedia() {
   return (
@@ -31,6 +32,7 @@ export default function AppRouter() {
         {/* Auth */}
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
+        <Route path="/room" element={<RoomPage />} />
       </Routes>
     </BrowserRouter>
   );

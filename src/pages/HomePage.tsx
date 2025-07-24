@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { useSocket } from "@/hooks/useSocket";
+import { v4 as uuidv4 } from "uuid";
 import People1 from "../assets/People_1.svg";
 import People2 from "../assets/People_2.svg";
 import House1 from "../assets/House_1.svg";
@@ -7,8 +9,80 @@ import House2 from "../assets/House_2.svg";
 import Clouds1 from "../assets/Clouds_1.svg";
 
 import Logo1 from "../assets/PinkLogo.png";
+import { useEffect, useState } from "react";
+import { getCurrentUser } from "@/features/user/api";
 
 export default function HomePage() {
+  const navigate = useNavigate();
+  const { socket, isConnected } = useSocket();
+  const [roomCode, setRoomCode] = useState("");
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        await getCurrentUser();
+      } catch (err: any) {
+        console.error(err);
+      }
+    }
+
+    fetchUser();
+  }, []);
+
+  const handleCreateRoom = () => {
+    if (!socket || !isConnected) return;
+
+    const roomId = uuidv4().slice(0, 6);
+    const userId = localStorage.getItem("id");
+
+    const onRoomCreated = ({ roomId, userId, health }) => {
+      socket.off("roomCreated", onRoomCreated);
+      socket.off("error", onError);
+      navigate("/room", {
+        state: { roomId, playerId: userId, health },
+      });
+    };
+
+    const onError = (err) => {
+      console.log(err);
+      alert(err.message || "Failed to create room");
+      socket.off("roomCreated", onRoomCreated);
+      socket.off("error", onError);
+    };
+
+    socket.emit("createRoom", { roomId, userId });
+    socket.on("roomCreated", onRoomCreated);
+    socket.on("error", onError);
+  };
+
+  const handleJoinRoom = () => {
+    if (!roomCode || !socket || !isConnected) return;
+
+    const userId = localStorage.getItem("id");
+
+    const onJoinedRoom = ({ roomId, userId, health }) => {
+      console.log("Joined Room:", roomId, userId, health);
+      socket.off("joinedRoom", onJoinedRoom);
+      socket.off("error", onError);
+      navigate("/room", {
+        state: { roomId, playerId: userId, health },
+      });
+    };
+
+    const onError = (err) => {
+      console.log(err);
+      alert(err.message);
+      socket.off("joinedRoom", onJoinedRoom);
+      socket.off("error", onError);
+    };
+
+    socket.emit("joinRoom", { roomId: roomCode, userId });
+
+    socket.on("joinedRoom", onJoinedRoom);
+
+    socket.on("error", onError);
+  };
+
   return (
     <div className="w-full min-h-screen">
       {/* Hero Section */}
@@ -29,23 +103,39 @@ export default function HomePage() {
         </div>
 
         {/* Hero Content */}
-  <div className="relative z-30 flex flex-col items-center text-center px-4 mb-12 mt-60  rounded-xl">
-  <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-800 leading-none mb-4 drop-shadow-2xl">
-    Bridge The Gap
-  </h1>
-  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-600 mb-3 drop-shadow">
-    one culture at a time
-  </h1>
-  <p className="text-base md:text-xl lg:text-2xl text-gray-700 mb-8 max-w-2xl drop-shadow">
-    Learn Indonesian Culture while having Fun
-  </p>
-  <Link
-    to="/game"
-    className="px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-full text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-  >
-    JOIN A ROOM
-  </Link>
-</div>
+        <div className="relative z-30 flex flex-col items-center text-center px-4 mb-12 mt-60  rounded-xl">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-800 leading-none mb-4 drop-shadow-2xl">
+            Bridge The Gap
+          </h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-600 mb-3 drop-shadow">
+            one culture at a time
+          </h1>
+          <p className="text-base md:text-xl lg:text-2xl text-gray-700 mb-8 max-w-2xl drop-shadow">
+            Learn Indonesian Culture while having Fun
+          </p>
+          <button
+            onClick={handleCreateRoom}
+            className="px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-full text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+          >
+            Create Room
+          </button>
+
+          <div className="relative z-30 flex flex-col items-center mt-4">
+            <input
+              type="text"
+              placeholder="Enter Room Code"
+              value={roomCode}
+              onChange={(e) => setRoomCode(e.target.value)}
+              className="px-4 py-2 border rounded-lg mb-2 text-center text-lg shadow-md"
+            />
+            <button
+              onClick={handleJoinRoom}
+              className="px-6 py-3 bg-rose-400 hover:bg-rose-500 text-white font-bold rounded-full text-lg shadow-lg transition-all duration-200"
+            >
+              Join Room
+            </button>
+          </div>
+        </div>
 
         {/* Illustration Area */}
         <div className="relative z-20 w-full max-w-6xl mx-auto px-4">
