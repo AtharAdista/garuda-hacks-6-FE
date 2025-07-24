@@ -82,14 +82,14 @@ export default function GamePage() {
       console.error("GamePage socket error:", error);
     });
 
-    const handleProvinceSelected = ({ province, userId }) => {
+    const handleProvinceSelected = ({ province, userId }: any) => {
       console.log("Province selected:", province, "by user:", userId);
       if (userId !== currentPlayerId) {
         console.log("Opponent is hovering/selecting:", province.name);
       }
     };
 
-    const handleOpponentSubmitted = ({ userId, province }) => {
+    const handleOpponentSubmitted = ({ userId, province }: any) => {
       console.log(
         "Opponent has submitted:",
         userId,
@@ -109,18 +109,16 @@ export default function GamePage() {
 
     const handleBothPlayersSubmitted = ({
       message,
-      submissionCount,
-      totalPlayers,
-    }) => {
+    }: any) => {
       console.log("Both players submitted:", message);
       setBothSubmitted(true);
       setBothSubmittedMessage(message);
     };
 
-    const handleShowResults = ({ results }) => {
+    const handleShowResults = ({ results }: any) => {
       console.log("Show results:", results);
       setShowResults(true);
-      const opponentResult = results.find((r) => r.userId !== currentPlayerId);
+      const opponentResult = results.find((r: any) => r.userId !== currentPlayerId);
       if (opponentResult) {
         setOpponentProvince(opponentResult.province);
       }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useLocation, useNavigate } from "react-router-dom";
+import type { GameStartedPayload, PlayerLeftPayload, RoomDataPayload, RoomEventPayload } from "@/interfaces/game-type";
 
 const SOCKET_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -82,24 +83,22 @@ export default function RoomPage() {
     });
 
     // Room events
-    const handleRoomCreated = ({ roomId, userId, health }: any) => {
+    const handleRoomCreated = ({ roomId, userId, health }: RoomEventPayload) => {
       console.log("Room created:", roomId, "User:", userId, "Health:", health);
-      // Request room data after a short delay to ensure room is properly set up
       setTimeout(() => socket.emit("requestRoomData", { roomId }), 200);
     };
 
-    const handleRoomJoined = ({ roomId, userId, health }: any) => {
+    const handleRoomJoined = ({ roomId, userId, health }: RoomEventPayload) => {
       console.log("Room joined:", roomId, "User:", userId, "Health:", health);
-      // Request room data after a short delay to ensure room is properly set up
       setTimeout(() => socket.emit("requestRoomData", { roomId }), 200);
     };
 
-    const handleRoomData = ({ roomId, players: roomPlayers, playerCount }: any) => {
+    const handleRoomData = ({ roomId, players: roomPlayers, playerCount }: RoomDataPayload) => {
       console.log("Room data received:", roomId, roomPlayers, "Player count:", playerCount);
       const playerArray = Object.entries(roomPlayers).map(
         ([userId, playerData]: [string, any]) => ({
           id: userId,
-          username: playerData.userId, // or fetch username from your user data
+          username: playerData.userId, 
           health: playerData.health,
         })
       );
@@ -109,7 +108,6 @@ export default function RoomPage() {
     const handleError = (error: any) => {
       console.error("Socket error:", error);
       
-      // Show error to user
       if (typeof error === 'string') {
         alert(`Error: ${error}`);
       } else if (error?.message) {
@@ -130,13 +128,13 @@ export default function RoomPage() {
       }
     };
 
-    const handlePlayerLeft = ({ userId }: any) => {
+    const handlePlayerLeft = ({ userId }: PlayerLeftPayload) => {
       console.log("Player left:", userId);
       // Refresh room data when someone leaves
       setTimeout(() => socket.emit("requestRoomData", { roomId: currentRoomId }), 500);
     };
 
-    const handleGameStarted = ({ roomId: eventRoomId } = {}) => {
+    const handleGameStarted = ({ roomId: eventRoomId }: GameStartedPayload = {roomId: ""}) => {
       console.log("Game is starting! Event data:", { eventRoomId });
       console.log("Current room data:", { currentRoomId, currentPlayerId });
       console.log("Socket instance:", socketRef.current?.id);
