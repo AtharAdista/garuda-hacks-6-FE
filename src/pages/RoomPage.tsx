@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const SOCKET_URL = "http://localhost:8000";
+const SOCKET_URL = import.meta.env.VITE_BACKEND_URL;
 
 interface Player {
   id: string;
@@ -70,7 +70,18 @@ export default function RoomPage() {
       console.log("Player left:", userId);
     };
 
+    const handleGameStarted = () => {
+      console.log("Game is starting!");
+      navigate("/game", {
+        state: {
+          roomId,
+          playerId,
+        },
+      });
+    };
+
     // Register all event listeners
+    socket.on("gameStarted", handleGameStarted);
     socket.on("roomCreated", handleRoomCreated);
     socket.on("joinedRoom", handleRoomJoined);
     socket.on("roomData", handleRoomData);
@@ -91,12 +102,14 @@ export default function RoomPage() {
       console.log("Cleaning up socket connection");
       socket.emit("leaveRoom", { roomId, userId: playerId });
       socket.off("connect");
+      socket.off("gameStarted");
       socket.off("disconnect");
       socket.off("roomCreated");
       socket.off("joinedRoom");
       socket.off("roomData");
       socket.off("playerLeft");
       socket.off("error");
+
       socket.disconnect();
     };
   }, [roomId, playerId, isCreator, navigate]);
@@ -116,7 +129,9 @@ export default function RoomPage() {
 
       {players.length == 2 && (
         <button
-          onClick={() => console.log("Game started")}
+          onClick={() => {
+            socketRef.current?.emit("startGame", { roomId });
+          }}
           className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           Start Game

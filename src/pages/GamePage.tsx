@@ -3,20 +3,81 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Feature as GeoJSONFeature } from "geojson";
 import geoData from "../data/38ProvinsiIndonesia-Provinsi.json";
+import { io, Socket } from "socket.io-client";
+import { useLocation } from "react-router-dom";
 
 import { provinceInfo, kodeToId } from "../data/provinceInfo";
+
+const socket = io(import.meta.env.VITE_BACKEND_URL);
 
 export default function GamePage() {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const geojsonLayerRef = useRef<L.GeoJSON | null>(null);
   const selectedLayerRef = useRef<L.Layer | null>(null);
-
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const socketRef = useRef<Socket | null>(null);
+  const location = useLocation();
+  const { roomId, playerId } = location.state || {};
+  
+  const [opponentProvince, setOpponentProvince] = useState<any>(null);
   const [selectedProvince, setSelectedProvince] = useState<any>(null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [opponentHasSubmitted, setOpponentHasSubmitted] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+
+  useEffect(() => {
+    socketRef.current = socket;
+
+    // Handle ketika opponent memilih provinsi (real-time selection)
+    const handleProvinceSelected = ({ province, userId }) => {
+      console.log("Province selected:", province, "by user:", userId);
+      if (userId !== playerId) {
+        // Ini hanya untuk preview real-time, bukan final answer
+        console.log("Opponent is hovering/selecting:", province.name);
+      }
+    };
+
+    // Handle ketika opponent submit final answer
+    const handleOpponentSubmitted = ({ userId, province }) => {
+      console.log("Opponent has submitted:", userId, "with province:", province);
+      console.log("My playerId:", playerId);
+      console.log("Setting opponentHasSubmitted to true and opponentProvince to:", province.name);
+      if (userId !== playerId) {
+        setOpponentHasSubmitted(true);
+        setOpponentProvince(province); // Set final answer opponent
+      }
+    };
+
+    // Handle ketika game selesai dan semua hasil ditampilkan
+    const handleShowResults = ({ results }) => {
+      console.log("Show results:", results);
+      setShowResults(true);
+      // results berisi jawaban semua player
+      const opponentResult = results.find(r => r.userId !== playerId);
+      if (opponentResult) {
+        setOpponentProvince(opponentResult.province);
+      }
+    };
+
+    socket.on("provinceSelected", handleProvinceSelected);
+    socket.on("opponentSubmitted", handleOpponentSubmitted);
+    socket.on("showResults", handleShowResults);
+
+    return () => {
+      socket.off("provinceSelected", handleProvinceSelected);
+      socket.off("opponentSubmitted", handleOpponentSubmitted);
+      socket.off("showResults", handleShowResults);
+    };
+  }, [playerId]);
+
+  useEffect(() => {
+    // Ketika kedua player sudah submit, tampilkan hasil
+    console.log("Checking results display:", { hasSubmitted, opponentHasSubmitted });
+    if (hasSubmitted && opponentHasSubmitted) {
+      console.log("Both players submitted, showing results");
+      setShowResults(true);
+    }
+  }, [hasSubmitted, opponentHasSubmitted]);
 
   // Styles
   const getDefaultStyle = (): L.PathOptions => ({
@@ -71,14 +132,35 @@ export default function GamePage() {
 
     if (!layer.feature || !layer.feature.properties) return;
     setSelectedProvince(layer.feature.properties);
+
+    // Emit untuk real-time preview (opsional)
+    socketRef.current?.emit("selectProvince", {
+      province: layer.feature.properties,
+      userId: playerId,
+      roomId: roomId,
+    });
+
     if (mapInstanceRef.current && (layer as L.Polygon).getBounds) {
       mapInstanceRef.current.fitBounds((layer as L.Polygon).getBounds());
     }
   };
 
+  const handleSubmit = () => {
+    if (!selectedProvince || hasSubmitted) return;
+
+    // Emit final submission
+    socketRef.current?.emit("submitProvince", {
+      province: selectedProvince,
+      userId: playerId,
+      roomId,
+    });
+
+    setHasSubmitted(true);
+    console.log("Submitted province:", selectedProvince.name);
+  };
+
   const onEachFeature = (feature: GeoJSONFeature, layer: L.Layer) => {
     if (feature.properties) {
-      // Ambil kode provinsi dari berbagai kemungkinan field
       let code: string | undefined;
       const props = feature.properties;
       if (props.KODE_PROV) {
@@ -88,7 +170,7 @@ export default function GamePage() {
       } else if (props.iso_code) {
         code = props.iso_code;
       }
-      // Nama dari GeoJSON
+
       const name =
         props.PROVINSI ||
         props.Provinsi ||
@@ -97,7 +179,6 @@ export default function GamePage() {
         (code && provinceInfo[code]?.name) ||
         "";
 
-      // Gabungkan semua info
       feature.properties = {
         ...(code ? provinceInfo[code] : {}),
         ...props,
@@ -137,7 +218,6 @@ export default function GamePage() {
       maxZoom: 19,
     }).addTo(map);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const geojsonLayer = L.geoJSON(geoData as any, {
       style: getDefaultStyle,
       onEachFeature: onEachFeature,
@@ -158,7 +238,6 @@ export default function GamePage() {
       geojsonLayerRef.current = null;
       selectedLayerRef.current = null;
     };
-    // eslint-disable-next-line
   }, []);
 
   return (
@@ -173,9 +252,57 @@ export default function GamePage() {
             Explore Indonesian provinces while playing
           </p>
         </div>
+
         <div className="relative">
+          {/* Submit Button */}
+          {!hasSubmitted && selectedProvince && (
+            <div className="text-center mb-6">
+              <button
+                className="px-8 py-4 bg-rose-600 text-white rounded-lg shadow-lg hover:bg-rose-700 transition-all transform hover:scale-105 font-bold text-lg"
+                onClick={handleSubmit}
+                disabled={hasSubmitted}
+              >
+                Submit My Province
+              </button>
+            </div>
+          )}
+
+          {/* Status Messages */}
+          {hasSubmitted && !showResults && (
+            <div className="text-center mb-6">
+              <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg">
+                <p className="font-medium">
+                  ✅ You submitted: <strong>{selectedProvince?.name}</strong>
+                </p>
+                {!opponentHasSubmitted && (
+                  <p className="text-sm mt-1">Waiting for opponent to submit...</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Results */}
+          {showResults && (
+            <div className="text-center mb-6">
+              <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded-lg">
+                <h3 className="font-bold text-lg mb-2">🎯 Results</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/50 p-3 rounded">
+                    <p className="font-medium">Your Answer:</p>
+                    <p className="text-lg font-bold">{selectedProvince?.name || "No selection"}</p>
+                  </div>
+                  <div className="bg-white/50 p-3 rounded">
+                    <p className="font-medium">Opponent's Answer:</p>
+                    <p className="text-lg font-bold">{opponentProvince?.name || "No selection"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="bg-white/90 rounded-2xl shadow-2xl overflow-hidden border border-rose-100">
             <div ref={mapRef} className="h-[70vh] w-full relative" />
+            
             {/* Info Panel */}
             <div className="absolute top-4 right-4 bg-white/90 p-5 rounded-xl shadow-xl border border-rose-100 z-[1000] min-w-[250px] max-w-[300px]">
               <h3 className="text-lg font-bold text-rose-600 mb-3">
@@ -200,9 +327,7 @@ export default function GamePage() {
                     </span>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-700">
-                      Population:
-                    </span>
+                    <span className="font-medium text-gray-700">Population:</span>
                     <span className="ml-2 text-gray-900">
                       {selectedProvince.population || "-"}
                     </span>
@@ -216,33 +341,13 @@ export default function GamePage() {
                   <div>
                     <span className="font-medium text-gray-700">Kode:</span>
                     <span className="ml-2 text-gray-900">
-                      {selectedProvince.KODE_PROV ||
-                        selectedProvince.kode ||
-                        "-"}
+                      {selectedProvince.KODE_PROV || selectedProvince.kode || "-"}
                     </span>
                   </div>
-                  {/* Tampilkan properti lain dari GeoJSON jika ada */}
-                  {Object.entries(selectedProvince)
-                    .filter(
-                      ([k]) =>
-                        ![
-                          "name",
-                          "capital",
-                          "population",
-                          "area",
-                          "kode",
-                          "KODE_PROV",
-                        ].includes(k)
-                    )
-                    .map(([k, v]) => (
-                      <div key={k}>
-                        <span className="font-medium text-gray-700">{k}:</span>
-                        <span className="ml-2 text-gray-900">{String(v)}</span>
-                      </div>
-                    ))}
                 </div>
               )}
             </div>
+
             {/* Legend */}
             <div className="absolute bottom-4 left-4 bg-white/90 p-4 rounded-xl shadow-lg border border-rose-100 z-[1000]">
               <h4 className="font-semibold text-rose-600 mb-3">Legend</h4>
