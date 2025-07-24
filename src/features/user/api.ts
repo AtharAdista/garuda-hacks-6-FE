@@ -18,6 +18,7 @@ export async function getCurrentUser() {
   if (data?.data?.username) {
     localStorage.setItem("username", data.data.username);
     localStorage.setItem("email", data.data.email);
+    localStorage.setItem("id", data.data.id)
   }
   return data;
 }

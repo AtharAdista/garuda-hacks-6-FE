@@ -10,6 +10,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [email, setEmail] = useState<string | undefined>(
     localStorage.getItem("email") || undefined
   );
+  const [id, setId] = useState<string | undefined>(
+    localStorage.getItem("id") || undefined
+  );
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -25,16 +28,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setEmail(data.data.email);
             localStorage.setItem("email", data.data.email);
           }
+          
+          if (data?.data?.id){
+            setId(data.data.id);
+            localStorage.setItem("id", data.data.id)
+          }
         })
         .catch(() => {
           localStorage.removeItem("token");
           localStorage.removeItem("username");
           localStorage.removeItem("email");
+          localStorage.removeItem("id");
           setIsLoggedIn(false);
           setUsername(undefined);
           setEmail(undefined);
+          setId(undefined)
         });
     } else {
+      setId(undefined)
       setUsername(undefined);
       setEmail(undefined);
     }
@@ -70,7 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, username, email, login, logout }}
+      value={{ isLoggedIn, username, email, id, login, logout }}
     >
       {children}
     </AuthContext.Provider>

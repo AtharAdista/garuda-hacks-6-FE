@@ -54,7 +54,7 @@ export default function HomePage() {
 
     const onError = (err: { message: any; }) => {
       console.log(err);
-      alert(err.message || "Failed to create room");
+      alert(err.message);
       socket.off("roomCreated", onRoomCreated);
       socket.off("error", onError);
     };
