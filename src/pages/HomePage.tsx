@@ -29,23 +29,23 @@ export default function HomePage() {
         </div>
 
         {/* Hero Content */}
-  <div className="relative z-30 flex flex-col items-center text-center px-4 mb-12 mt-60  rounded-xl">
-  <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-800 leading-none mb-4 drop-shadow-2xl">
-    Bridge The Gap
-  </h1>
-  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-600 mb-3 drop-shadow">
-    one culture at a time
-  </h1>
-  <p className="text-base md:text-xl lg:text-2xl text-gray-700 mb-8 max-w-2xl drop-shadow">
-    Learn Indonesian Culture while having Fun
-  </p>
-  <Link
-    to="/game"
-    className="px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-full text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-  >
-    JOIN A ROOM
-  </Link>
-</div>
+        <div className="relative z-30 flex flex-col items-center text-center px-4 mb-12 mt-60  rounded-xl">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-800 leading-none mb-4 drop-shadow-2xl">
+            Bridge The Gap
+          </h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-600 mb-3 drop-shadow">
+            one culture at a time
+          </h1>
+          <p className="text-base md:text-xl lg:text-2xl text-gray-700 mb-8 max-w-2xl drop-shadow">
+            Learn Indonesian Culture while having Fun
+          </p>
+          <Link
+            to="/game"
+            className="px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-full text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+          >
+            JOIN A ROOM
+          </Link>
+        </div>
 
         {/* Illustration Area */}
         <div className="relative z-20 w-full max-w-6xl mx-auto px-4">

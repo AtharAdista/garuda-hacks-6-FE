@@ -3,6 +3,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { ProvinceData, ProvinceProperties } from "../interfaces/gametype";
 import type { Feature as GeoJSONFeature } from "geojson";
+import CulturalDataDisplay from "@/components/CulturalDataDisplay";
 
 // Province data
 const provinceInfo: ProvinceData = {
@@ -536,152 +537,160 @@ export default function GamePage() {
           </p>
         </div>
 
-        <div className="relative">
-          <div className="bg-white/90 rounded-2xl shadow-2xl overflow-hidden border border-rose-100">
-            <div ref={mapRef} className="h-[70vh] w-full relative">
-              {loading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-[1000]">
-                  <div className="bg-white p-6 rounded-xl shadow-xl flex items-center space-x-3">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-rose-500"></div>
-                    <span className="text-gray-700 font-semibold">
-                      Loading map data...
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Map Section */}
+          <div className="lg:col-span-2">
+            <div className="bg-white/90 rounded-2xl shadow-2xl overflow-hidden border border-rose-100">
+              <div ref={mapRef} className="h-[70vh] w-full relative">
+                {loading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-[1000]">
+                    <div className="bg-white p-6 rounded-xl shadow-xl flex items-center space-x-3">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-rose-500"></div>
+                      <span className="text-gray-700 font-semibold">
+                        Loading map data...
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {error && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-[1000]">
+                    <div className="bg-rose-50 border border-rose-200 p-6 rounded-xl shadow-xl max-w-md">
+                      <div className="flex items-center space-x-3">
+                        <svg
+                          className="w-6 h-6 text-rose-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <span className="text-rose-700 font-semibold">
+                          {error}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => window.location.reload()}
+                        className="mt-4 px-4 py-2 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 text-white rounded-full font-bold hover:from-rose-500 hover:to-pink-600 transition-all"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Info Panel */}
+              <div className="absolute top-4 right-4 bg-white/90 p-5 rounded-xl shadow-xl border border-rose-100 z-[1000] min-w-[250px] max-w-[300px]">
+                <h3 className="text-lg font-bold text-rose-600 mb-3">
+                  Province Information
+                </h3>
+
+                {!selectedProvince ? (
+                  <p className="text-gray-600">
+                    Click on any province to see details
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {(() => {
+                      const info = getProvinceInfo(selectedProvince);
+                      const code =
+                        selectedProvince.iso_code ||
+                        selectedProvince.kode ||
+                        selectedProvince.code ||
+                        "N/A";
+
+                      return (
+                        <>
+                          <div>
+                            <span className="font-medium text-gray-700">
+                              Province:
+                            </span>
+                            <span className="ml-2 text-gray-900 font-bold">
+                              {info.name || selectedProvince.name || "Unknown"}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-medium text-gray-700">
+                              Capital:
+                            </span>
+                            <span className="ml-2 text-gray-900">
+                              {info.capital || "N/A"}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-medium text-gray-700">
+                              Population:
+                            </span>
+                            <span className="ml-2 text-gray-900">
+                              {info.population || "N/A"}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-medium text-gray-700">
+                              Area:
+                            </span>
+                            <span className="ml-2 text-gray-900">
+                              {info.area || "N/A"}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="font-medium text-gray-700">
+                              Code:
+                            </span>
+                            <span className="ml-2 text-gray-900">{code}</span>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                )}
+              </div>
+
+              {/* Legend */}
+              <div className="absolute bottom-4 left-4 bg-white/90 p-4 rounded-xl shadow-lg border border-rose-100 z-[1000]">
+                <h4 className="font-semibold text-rose-600 mb-3">Legend</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <div
+                      className="w-5 h-5 mr-3 border border-gray-400 rounded"
+                      style={{ backgroundColor: "#3388ff" }}
+                    ></div>
+                    <span className="text-sm text-gray-700 font-semibold">
+                      Default Province
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <div
+                      className="w-5 h-5 mr-3 border border-gray-400 rounded"
+                      style={{ backgroundColor: "#ff7800" }}
+                    ></div>
+                    <span className="text-sm text-gray-700 font-semibold">
+                      Hovered Province
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <div
+                      className="w-5 h-5 mr-3 border border-gray-400 rounded"
+                      style={{ backgroundColor: "#e74c3c" }}
+                    ></div>
+                    <span className="text-sm text-gray-700 font-semibold">
+                      Selected Province
                     </span>
                   </div>
                 </div>
-              )}
-
-              {error && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-[1000]">
-                  <div className="bg-rose-50 border border-rose-200 p-6 rounded-xl shadow-xl max-w-md">
-                    <div className="flex items-center space-x-3">
-                      <svg
-                        className="w-6 h-6 text-rose-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <span className="text-rose-700 font-semibold">
-                        {error}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => window.location.reload()}
-                      className="mt-4 px-4 py-2 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 text-white rounded-full font-bold hover:from-rose-500 hover:to-pink-600 transition-all"
-                    >
-                      Retry
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Info Panel */}
-            <div className="absolute top-4 right-4 bg-white/90 p-5 rounded-xl shadow-xl border border-rose-100 z-[1000] min-w-[250px] max-w-[300px]">
-              <h3 className="text-lg font-bold text-rose-600 mb-3">
-                Province Information
-              </h3>
-
-              {!selectedProvince ? (
-                <p className="text-gray-600">
-                  Click on any province to see details
-                </p>
-              ) : (
-                <div className="space-y-2">
-                  {(() => {
-                    const info = getProvinceInfo(selectedProvince);
-                    const code =
-                      selectedProvince.iso_code ||
-                      selectedProvince.kode ||
-                      selectedProvince.code ||
-                      "N/A";
-
-                    return (
-                      <>
-                        <div>
-                          <span className="font-medium text-gray-700">
-                            Province:
-                          </span>
-                          <span className="ml-2 text-gray-900 font-bold">
-                            {info.name || selectedProvince.name || "Unknown"}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="font-medium text-gray-700">
-                            Capital:
-                          </span>
-                          <span className="ml-2 text-gray-900">
-                            {info.capital || "N/A"}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="font-medium text-gray-700">
-                            Population:
-                          </span>
-                          <span className="ml-2 text-gray-900">
-                            {info.population || "N/A"}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="font-medium text-gray-700">
-                            Area:
-                          </span>
-                          <span className="ml-2 text-gray-900">
-                            {info.area || "N/A"}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="font-medium text-gray-700">
-                            Code:
-                          </span>
-                          <span className="ml-2 text-gray-900">{code}</span>
-                        </div>
-                      </>
-                    );
-                  })()}
-                </div>
-              )}
-            </div>
-
-            {/* Legend */}
-            <div className="absolute bottom-4 left-4 bg-white/90 p-4 rounded-xl shadow-lg border border-rose-100 z-[1000]">
-              <h4 className="font-semibold text-rose-600 mb-3">Legend</h4>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#3388ff" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Default Province
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#ff7800" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Hovered Province
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#e74c3c" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Selected Province
-                  </span>
-                </div>
               </div>
             </div>
+          </div>
+
+          {/* Cultural Data Display Section */}
+          <div className="lg:col-span-1">
+            <CulturalDataDisplay />
           </div>
         </div>
       </div>
