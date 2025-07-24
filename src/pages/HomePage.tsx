@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "@/hooks/useSocket";

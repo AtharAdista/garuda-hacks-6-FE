@@ -15,7 +15,6 @@ export default function GamePage() {
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState<string | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedProvince, setSelectedProvince] = useState<any>(null);
 
   // Styles
@@ -137,7 +136,6 @@ export default function GamePage() {
       maxZoom: 19,
     }).addTo(map);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const geojsonLayer = L.geoJSON(geoData as any, {
       style: getDefaultStyle,
       onEachFeature: onEachFeature,
@@ -158,7 +156,6 @@ export default function GamePage() {
       geojsonLayerRef.current = null;
       selectedLayerRef.current = null;
     };
-    // eslint-disable-next-line
   }, []);
 
   return (

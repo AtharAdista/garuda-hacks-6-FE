@@ -10,13 +10,15 @@ import CultureEntryList from "../components/CultureEntryCard";
 import cultureEntries from "../data/CultureEntries.json";
 import type { CultureEntry } from "@/interfaces/cultureentry-type";
 
+import Chatbot from "../components/Chatbot";
+
+
 export default function EncyclopediaPage() {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const geojsonLayerRef = useRef<L.GeoJSON | null>(null);
   const selectedLayerRef = useRef<L.Layer | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedProvince, setSelectedProvince] = useState<any>(null);
   const [selectedEntry, setSelectedEntry] = useState<CultureEntry | null>(null);
 
@@ -142,7 +144,6 @@ export default function EncyclopediaPage() {
       maxZoom: 19,
     }).addTo(map);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const geojsonLayer = L.geoJSON(geoData as any, {
       style: getDefaultStyle,
       onEachFeature: onEachFeature,
@@ -163,7 +164,6 @@ export default function EncyclopediaPage() {
       geojsonLayerRef.current = null;
       selectedLayerRef.current = null;
     };
-    // eslint-disable-next-line
   }, []);
 
   const selectedProvinceName = selectedProvince?.name;
@@ -256,6 +256,8 @@ export default function EncyclopediaPage() {
               )}
             </div>
             {/* Legend */}
+            <Chatbot />
+
             <div className="absolute bottom-4 left-4 bg-white/90 p-4 rounded-xl shadow-lg border border-rose-100 z-[1000]">
               <h4 className="font-semibold text-rose-600 mb-3">Legend</h4>
               <div className="space-y-2">
@@ -293,7 +295,10 @@ export default function EncyclopediaPage() {
 
         <div className="mt-12">
           <h2 className="text-3xl font-bold mb-4">Entri Terkait</h2>
-          <CultureEntryList entries={filteredEntries} onEntryClick={setSelectedEntry}/>
+          <CultureEntryList
+            entries={filteredEntries}
+            onEntryClick={setSelectedEntry}
+          />
         </div>
       </div>
 
@@ -312,7 +317,7 @@ export default function EncyclopediaPage() {
             </p>
             {selectedEntry.image && (
               <img
-                src="https://picsum.photos/400/300?random"
+                src={selectedEntry.image}
                 alt={selectedEntry.title}
                 className="rounded-lg mb-3"
               />

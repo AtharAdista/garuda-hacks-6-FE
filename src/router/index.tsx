@@ -7,6 +7,7 @@ import EncyclopediaPage from "../pages/EncyclopediaPage";
 import LoginForm from "@/features/auth/LoginForm";
 import RegisterForm from "@/features/auth/RegisterForm";
 import RoomPage from "@/pages/RoomPage";
+import ProfilePage from "@/pages/ProfilePage";
 
 export default function AppRouter() {
   return (
@@ -18,6 +19,7 @@ export default function AppRouter() {
           <Route path="game" element={<GamePage />} />
           <Route path="encyclopedia" element={<EncyclopediaPage />} />
           <Route path="room" element={<RoomPage />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
         {/* Layout auth tanpa NavBar */}
         <Route element={<AuthLayout />}>

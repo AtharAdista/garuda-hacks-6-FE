@@ -18,7 +18,6 @@ export default function LoginForm({ onLogin }: { onLogin?: () => void }) {
       await login(token);
       onLogin?.();
       navigate("/");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
     }

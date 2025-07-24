@@ -24,8 +24,7 @@ export default function CultureEntryList({
         >
           {entry.image ? (
             <img
-              src="https://picsum.photos/400/300?random"
-              // src={entry.image}
+              src={entry.image}
               alt={entry.title}
               className="rounded-lg h-40 object-cover mb-3"
             />
