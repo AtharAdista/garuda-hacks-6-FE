@@ -2,13 +2,12 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "@/hooks/useSocket";
 import { v4 as uuidv4 } from "uuid";
-import People1 from "../assets/People_1.svg";
-import People2 from "../assets/People_2.svg";
-import House1 from "../assets/House_1.svg";
-import House2 from "../assets/House_2.svg";
-import Clouds1 from "../assets/Clouds_1.svg";
-
-import Logo3 from "../assets/logo_3_pink.svg";
+import People1 from "../../public/People_1.svg";
+import People2 from "../../public/People_2.svg";
+import House1 from "../../public/House_1.svg";
+import House2 from "../../public/House_2.svg";
+import Clouds1 from "../../public/Clouds_1.svg";
+import Logo3 from "../../public/Logo_3_pink.svg";
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/features/user/api";
 
