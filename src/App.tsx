@@ -1,14 +1,12 @@
 import "./styles/App.css";
 import NavBar from "./components/NavBar";
-import HomePage from "./pages/HomePage";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
     <>
       <NavBar />
-      <div id="Home" className="relative z-0 mt-[-4rem]">
-        <HomePage />
-      </div>
+      <Outlet />
     </>
   );
 }

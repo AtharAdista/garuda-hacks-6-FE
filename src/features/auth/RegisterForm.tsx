@@ -18,6 +18,7 @@ export default function RegisterForm() {
       const registeredUsername = await registerUser(username, email, password);
       setSuccess(`Registration successful! Welcome, ${registeredUsername}.`);
       setTimeout(() => navigate("/login"), 1500);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
     }
