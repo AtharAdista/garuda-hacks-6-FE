@@ -42,19 +42,16 @@ export default function RoomPage() {
     // Room events
     const handleRoomCreated = ({ roomId, userId, health }: any) => {
       console.log("Room created:", roomId, "User:", userId, "Health:", health);
-      // Request room data to get player list
       socket.emit("requestRoomData", { roomId });
     };
 
     const handleRoomJoined = ({ roomId, userId, health }: any) => {
       console.log("Room joined:", roomId, "User:", userId, "Health:", health);
-      // Request room data to get updated player list
       socket.emit("requestRoomData", { roomId });
     };
 
     const handleRoomData = ({ roomId, players: roomPlayers }: any) => {
       console.log("Room data received:", roomId, roomPlayers);
-      // Convert Map-like structure to array
       const playerArray = Object.entries(roomPlayers).map(([userId, playerData]: [string, any]) => ({
         id: userId,
         username: playerData.userId, // or fetch username from your user data
@@ -65,12 +62,10 @@ export default function RoomPage() {
 
     const handleError = (error: any) => {
       console.error("Socket error:", error);
-      // Handle error (maybe show toast or redirect)
     };
 
     const handlePlayerLeft = ({ userId }: any) => {
       console.log("Player left:", userId);
-      // Room data will be updated via roomData event, so no need to manually update here
     };
 
     // Register all event listeners
