@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Feature as GeoJSONFeature } from "geojson";
+import CulturalDataDisplay from "@/components/CulturalDataDisplay";
+
 import geoData from "../data/38ProvinsiIndonesia-Provinsi.json";
 import { io, Socket } from "socket.io-client";
 import { useLocation } from "react-router-dom";
@@ -348,42 +350,47 @@ export default function GamePage() {
               )}
             </div>
 
-            {/* Legend */}
-            <div className="absolute bottom-4 left-4 bg-white/90 p-4 rounded-xl shadow-lg border border-rose-100 z-[1000]">
-              <h4 className="font-semibold text-rose-600 mb-3">Legend</h4>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#3388ff" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Default Province
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#ff7800" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Hovered Province
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#e74c3c" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Selected Province
-                  </span>
+              {/* Legend */}
+              <div className="absolute bottom-4 left-4 bg-white/90 p-4 rounded-xl shadow-lg border border-rose-100 z-[1000]">
+                <h4 className="font-semibold text-rose-600 mb-3">Legend</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <div
+                      className="w-5 h-5 mr-3 border border-gray-400 rounded"
+                      style={{ backgroundColor: "#3388ff" }}
+                    ></div>
+                    <span className="text-sm text-gray-700 font-semibold">
+                      Default Province
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <div
+                      className="w-5 h-5 mr-3 border border-gray-400 rounded"
+                      style={{ backgroundColor: "#ff7800" }}
+                    ></div>
+                    <span className="text-sm text-gray-700 font-semibold">
+                      Hovered Province
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <div
+                      className="w-5 h-5 mr-3 border border-gray-400 rounded"
+                      style={{ backgroundColor: "#e74c3c" }}
+                    ></div>
+                    <span className="text-sm text-gray-700 font-semibold">
+                      Selected Province
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Cultural Data Display Section */}
+          <div className="lg:col-span-1">
+            <CulturalDataDisplay />
+          </div>
         </div>
       </div>
-    </div>
   );
 }
