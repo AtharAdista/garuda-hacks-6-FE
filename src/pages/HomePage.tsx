@@ -6,7 +6,7 @@ import House1 from "../assets/House_1.svg";
 import House2 from "../assets/House_2.svg";
 import Clouds1 from "../assets/Clouds_1.svg";
 
-import Logo1 from "../assets/PinkLogo.png";
+import Logo3 from "../assets/logo_3_pink.svg";
 
 export default function HomePage() {
   return (
@@ -29,47 +29,47 @@ export default function HomePage() {
         </div>
 
         {/* Hero Content */}
-  <div className="relative z-30 flex flex-col items-center text-center px-4 mb-12 mt-60  rounded-xl">
-  <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-800 leading-none mb-4 drop-shadow-2xl">
-    Bridge The Gap
-  </h1>
-  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-600 mb-3 drop-shadow">
-    one culture at a time
-  </h1>
-  <p className="text-base md:text-xl lg:text-2xl text-gray-700 mb-8 max-w-2xl drop-shadow">
-    Learn Indonesian Culture while having Fun
-  </p>
-  <Link
-    to="/game"
-    className="px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-full text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-  >
-    JOIN A ROOM
-  </Link>
-</div>
+        <div className="relative z-30 flex flex-col items-center text-center px-4 mb-12 mt-60  rounded-xl">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-800 leading-none mb-4 drop-shadow-2xl">
+            Bridge The Gap
+          </h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-600 mb-3 drop-shadow">
+            one culture at a time
+          </h1>
+          <p className="text-base md:text-xl lg:text-2xl text-gray-700 mb-8 max-w-2xl drop-shadow">
+            Learn Indonesian Culture while having Fun
+          </p>
+          <Link
+            to="/game"
+            className="px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-full text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+          >
+            JOIN A ROOM
+          </Link>
+        </div>
 
         {/* Illustration Area */}
         <div className="relative z-20 w-full max-w-6xl mx-auto px-4">
           <div className="relative flex items-center justify-center min-h-[400px]">
             {/* Left House */}
             <div className="absolute left-[-30rem] bottom-80 z-10">
-              <div className="w-200 h-56 rounded-lg flex flex-col items-center justify-center">
+              <div className="w-160 h-40 rounded-lg flex flex-col items-center justify-center">
                 <img src={House1} alt="" />
               </div>
             </div>
 
             {/* Right House */}
             <div className="absolute right-[-30rem] bottom-80 z-10">
-              <div className="w-200 h-56 rounded-lg flex flex-col items-center justify-center">
+              <div className="w-160 h-40 rounded-lg flex flex-col items-center justify-center">
                 <img src={House2} alt="" />
               </div>
             </div>
 
             {/* Center Characters */}
             <div className="flex items-end justify-center space-x-[-4rem] z-20 relative bottom-[4rem]">
-              <div className="w-80 h-56 rounded-lg flex flex-col items-center justify-center">
+              <div className="w-70 h-50 rounded-lg flex flex-col items-center justify-center">
                 <img src={People1} alt="" />
               </div>
-              <div className="w-90 h-56 rounded-lg flex flex-col items-center justify-center">
+              <div className="w-80 h-40 rounded-lg flex flex-col items-center justify-center">
                 <img src={People2} alt="" />
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function HomePage() {
           {/* Logo Section */}
           <div className="mt-40 mb-40">
             <div className="mx-auto mb-4 flex items-center justify-center">
-              <img src={Logo1} alt="Logo" className="w-120" />
+              <img src={Logo3} alt="Logo" className="w-120" />
             </div>
           </div>
         </div>
@@ -207,8 +207,8 @@ export default function HomePage() {
             Ready to Start Your Cultural Journey?
           </h3>
           <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Join thousands of players learning about Indonesian culture through
-            interactive gameplay
+            Be one of the players learning about Indonesian culture through
+            Culturate
           </p>
           <Link
             to="/game"
