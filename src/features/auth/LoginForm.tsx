@@ -1,0 +1,48 @@
+import { useState } from "react";
+import { loginUser } from "./api";
+
+export default function LoginForm({ onLogin }: { onLogin?: () => void }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      const token = await loginUser(email, password);
+      localStorage.setItem("token", token);
+      onLogin?.();
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        className="border p-2 rounded w-full"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+        className="border p-2 rounded w-full"
+      />
+      {error && <div className="text-red-600">{error}</div>}
+      <button
+        type="submit"
+        className="bg-pink-600 text-white px-4 py-2 rounded"
+      >
+        Login
+      </button>
+    </form>
+  );
+}
