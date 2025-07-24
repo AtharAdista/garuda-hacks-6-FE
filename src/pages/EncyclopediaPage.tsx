@@ -6,14 +6,15 @@ import geoData from "../data/38ProvinsiIndonesia-Provinsi.json";
 
 import { provinceInfo, kodeToId } from "../data/provinceInfo";
 
-export default function GamePage() {
+import CultureEntryList from "../components/CultureEntryCard";
+import cultureEntries from "../data/CultureEntries.json";
+
+
+export default function EncyclopediaPage() {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const geojsonLayerRef = useRef<L.GeoJSON | null>(null);
   const selectedLayerRef = useRef<L.Layer | null>(null);
-
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedProvince, setSelectedProvince] = useState<any>(null);
@@ -161,16 +162,23 @@ export default function GamePage() {
     // eslint-disable-next-line
   }, []);
 
+  const selectedProvinceName = selectedProvince?.name;
+
+  // Filter entri sesuai provinsi
+  const filteredEntries = selectedProvinceName
+    ? cultureEntries.filter((e) => e.province === selectedProvinceName)
+    : cultureEntries;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-pink-200 to-rose-200">
       <div className="h-20" />
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="mb-8 text-center">
           <h1 className="text-4xl md:text-5xl font-black text-gray-800 mb-2 drop-shadow-2xl">
-            Indonesia Game Map
+            Indonesia Encyclopedia Map
           </h1>
           <p className="text-lg md:text-xl text-gray-700 mb-4 drop-shadow">
-            Explore Indonesian provinces while playing
+            Explore Indonesian provinces and see their details
           </p>
         </div>
         <div className="relative">
@@ -277,6 +285,11 @@ export default function GamePage() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="mt-12">
+          <h2 className="text-3xl font-bold mb-4">Entri Terkait</h2>
+          <CultureEntryList entries={filteredEntries} />
         </div>
       </div>
     </div>

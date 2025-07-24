@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "@/hooks/useSocket";
@@ -8,7 +9,7 @@ import House1 from "../assets/House_1.svg";
 import House2 from "../assets/House_2.svg";
 import Clouds1 from "../assets/Clouds_1.svg";
 
-import Logo1 from "../assets/PinkLogo.png";
+import Logo3 from "../assets/logo_3_pink.svg";
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/features/user/api";
 
@@ -35,7 +36,15 @@ export default function HomePage() {
     const roomId = uuidv4().slice(0, 6);
     const userId = localStorage.getItem("id");
 
-    const onRoomCreated = ({ roomId, userId, health }) => {
+    const onRoomCreated = ({
+      roomId,
+      userId,
+      health,
+    }: {
+      roomId: string;
+      userId: string;
+      health: any;
+    }) => {
       socket.off("roomCreated", onRoomCreated);
       socket.off("error", onError);
       navigate("/room", {
@@ -43,7 +52,7 @@ export default function HomePage() {
       });
     };
 
-    const onError = (err) => {
+    const onError = (err: { message: any; }) => {
       console.log(err);
       alert(err.message || "Failed to create room");
       socket.off("roomCreated", onRoomCreated);
@@ -60,7 +69,15 @@ export default function HomePage() {
 
     const userId = localStorage.getItem("id");
 
-    const onJoinedRoom = ({ roomId, userId, health }) => {
+    const onJoinedRoom = ({
+      roomId,
+      userId,
+      health,
+    }: {
+      roomId: string;
+      userId: string;
+      health: any;
+    }) => {
       console.log("Joined Room:", roomId, userId, health);
       socket.off("joinedRoom", onJoinedRoom);
       socket.off("error", onError);
@@ -69,7 +86,7 @@ export default function HomePage() {
       });
     };
 
-    const onError = (err) => {
+    const onError = (err: { message: any; }) => {
       console.log(err);
       alert(err.message);
       socket.off("joinedRoom", onJoinedRoom);
@@ -103,7 +120,7 @@ export default function HomePage() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-30 flex flex-col items-center text-center px-4 mb-12 mt-60  rounded-xl">
+        <div className="relative z-30 flex flex-col items-center text-center px-4 mb-12 mt-60 rounded-xl">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-800 leading-none mb-4 drop-shadow-2xl">
             Bridge The Gap
           </h1>
@@ -113,27 +130,41 @@ export default function HomePage() {
           <p className="text-base md:text-xl lg:text-2xl text-gray-700 mb-8 max-w-2xl drop-shadow">
             Learn Indonesian Culture while having Fun
           </p>
-          <button
-            onClick={handleCreateRoom}
-            className="px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-full text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-          >
-            Create Room
-          </button>
 
-          <div className="relative z-30 flex flex-col items-center mt-4">
-            <input
-              type="text"
-              placeholder="Enter Room Code"
-              value={roomCode}
-              onChange={(e) => setRoomCode(e.target.value)}
-              className="px-4 py-2 border rounded-lg mb-2 text-center text-lg shadow-md"
-            />
+          {/* Create & Join Room Side by Side */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-xl mb-4">
+            {/* Create Room */}
             <button
-              onClick={handleJoinRoom}
-              className="px-6 py-3 bg-rose-400 hover:bg-rose-500 text-white font-bold rounded-full text-lg shadow-lg transition-all duration-200"
+              onClick={handleCreateRoom}
+              className="flex-1 px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-xl text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 mb-3 md:mb-0"
             >
-              Join Room
+              Create Room
             </button>
+
+            {/* Join Room */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleJoinRoom();
+              }}
+              className="flex flex-1 items-center bg-white rounded-xl shadow-md px-2 py-1 gap-2 border border-gray-200"
+            >
+              <input
+                type="text"
+                placeholder="Enter Room Code"
+                value={roomCode}
+                onChange={(e) => setRoomCode(e.target.value)}
+                className="flex-1 px-4 py-3 rounded-lg text-lg focus:outline-none"
+                maxLength={8}
+                autoComplete="off"
+              />
+              <button
+                type="submit"
+                className="px-6 py-3 bg-rose-400 hover:bg-rose-500 text-white font-bold rounded-lg text-lg shadow transition-all duration-200"
+              >
+                Join
+              </button>
+            </form>
           </div>
         </div>
 
@@ -142,24 +173,24 @@ export default function HomePage() {
           <div className="relative flex items-center justify-center min-h-[400px]">
             {/* Left House */}
             <div className="absolute left-[-30rem] bottom-80 z-10">
-              <div className="w-200 h-56 rounded-lg flex flex-col items-center justify-center">
+              <div className="w-160 h-40 rounded-lg flex flex-col items-center justify-center">
                 <img src={House1} alt="" />
               </div>
             </div>
 
             {/* Right House */}
             <div className="absolute right-[-30rem] bottom-80 z-10">
-              <div className="w-200 h-56 rounded-lg flex flex-col items-center justify-center">
+              <div className="w-160 h-40 rounded-lg flex flex-col items-center justify-center">
                 <img src={House2} alt="" />
               </div>
             </div>
 
             {/* Center Characters */}
             <div className="flex items-end justify-center space-x-[-4rem] z-20 relative bottom-[4rem]">
-              <div className="w-80 h-56 rounded-lg flex flex-col items-center justify-center">
+              <div className="w-70 h-50 rounded-lg flex flex-col items-center justify-center">
                 <img src={People1} alt="" />
               </div>
-              <div className="w-90 h-56 rounded-lg flex flex-col items-center justify-center">
+              <div className="w-80 h-40 rounded-lg flex flex-col items-center justify-center">
                 <img src={People2} alt="" />
               </div>
             </div>
@@ -195,7 +226,7 @@ export default function HomePage() {
           {/* Logo Section */}
           <div className="mt-40 mb-40">
             <div className="mx-auto mb-4 flex items-center justify-center">
-              <img src={Logo1} alt="Logo" className="w-120" />
+              <img src={Logo3} alt="Logo" className="w-120" />
             </div>
           </div>
         </div>
@@ -297,8 +328,8 @@ export default function HomePage() {
             Ready to Start Your Cultural Journey?
           </h3>
           <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Join thousands of players learning about Indonesian culture through
-            interactive gameplay
+            Be one of the players learning about Indonesian culture through
+            Culturate
           </p>
           <Link
             to="/game"

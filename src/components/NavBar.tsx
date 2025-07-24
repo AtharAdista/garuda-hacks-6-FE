@@ -1,27 +1,38 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import Logo1 from "../assets/logo_3.svg";
+import Logo3 from "../assets/logo_3_pink.svg";
+import { useAuth } from "@/features/auth/useAuth";
 
 const navItems = [
   { text: "Home", to: "/" },
   { text: "Play", to: "/game" },
   { text: "Encyclopedia", to: "/encyclopedia" },
-  { text: "Chatbot", to: "/chatbot" },
 ];
 
 export default function NavBar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [drawer, setDrawer] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Placeholder: ganti dengan logic auth asli jika sudah ada
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const username = "John Doe";
+  const { isLoggedIn, email, username, logout } = useAuth();
 
-  // Placeholder login/logout
-  const handleLogin = () => setIsLoggedIn(true);
-  const handleLogout = () => setIsLoggedIn(false);
+  const handleLogout = () => {
+    logout();
+    setShowDropdown(false);
+    setDrawer(false);
+    navigate("/");
+  };
+  // Navigasi ke login/register
+  const handleLogin = () => {
+    setDrawer(false);
+    navigate("/login");
+  };
+  const handleRegister = () => {
+    setDrawer(false);
+    navigate("/register");
+  };
 
   return (
     <>
@@ -32,7 +43,7 @@ export default function NavBar() {
             {/* Logo Section */}
             <div className="flex items-center">
               <Link to="/" className="flex items-center gap-3 group">
-                <img src={Logo1} alt="Logo" className="w-24 h-24 " />
+                <img src={Logo3} alt="Logo" className="w-24 h-24 " />
               </Link>
             </div>
 
@@ -67,7 +78,10 @@ export default function NavBar() {
                   >
                     Login
                   </button>
-                  <button className="px-6 py-2 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <button
+                    className="px-6 py-2 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                    onClick={handleRegister}
+                  >
                     Sign Up
                   </button>
                 </div>
@@ -75,15 +89,22 @@ export default function NavBar() {
                 /* Profile Dropdown */
                 <div className="hidden md:block relative">
                   <button
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-all duration-300"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-all duration-300"
                     onClick={() => setShowDropdown((v) => !v)}
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                      {username.charAt(0)}
+                    <div className="w-9 h-9 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-bold uppercase">
+                      {username ? username.charAt(0) : "?"}
                     </div>
-                    <span className="text-sm">{username}</span>
+                    <div className="flex flex-col items-start">
+                      <span className="text-sm font-semibold">
+                        {username ?? "Loading..."}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {email ?? ""}
+                      </span>
+                    </div>
                     <svg
-                      className={`w-4 h-4 transition-transform duration-300 ${
+                      className={`w-4 h-4 ml-2 transition-transform duration-300 ${
                         showDropdown ? "rotate-180" : ""
                       }`}
                       fill="none"
@@ -103,15 +124,6 @@ export default function NavBar() {
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                         onClick={() => setShowDropdown(false)}
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
                         Profile
                       </Link>
                       <Link
@@ -119,35 +131,13 @@ export default function NavBar() {
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                         onClick={() => setShowDropdown(false)}
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                          <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
                         Settings
                       </Link>
                       <hr className="my-2 border-gray-200" />
                       <button
                         className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
-                        onClick={() => {
-                          setShowDropdown(false);
-                          handleLogout();
-                        }}
+                        onClick={handleLogout}
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
                         Logout
                       </button>
                     </div>
@@ -190,9 +180,7 @@ export default function NavBar() {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-pink-50 to-indigo-100">
-                  <img src={Logo1} alt="Logo" className="w-6 h-6" />
-                </div>
+                  <img src={Logo3} alt="Logo" className="w-20 h-20" />
               </div>
               <button
                 className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors duration-200"
@@ -235,34 +223,33 @@ export default function NavBar() {
                 <div className="space-y-3">
                   <button
                     className="w-full px-4 py-3 text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-white transition-all duration-300"
-                    onClick={() => {
-                      setDrawer(false);
-                      handleLogin();
-                    }}
+                    onClick={handleLogin}
                   >
                     Login
                   </button>
-                  <button className="w-full px-4 py-3 bg-gradient-to-r from-pink-600 to-pink-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                  <button
+                    className="w-full px-4 py-3 bg-gradient-to-r from-pink-600 to-pink-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                    onClick={handleRegister}
+                  >
                     Sign Up
                   </button>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-                    <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                      {username.charAt(0)}
+                    <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold uppercase">
+                      {username ? username.charAt(0) : "?"}
                     </div>
                     <div>
                       <p className="font-medium text-gray-800">{username}</p>
-                      <p className="text-sm text-gray-500">user@example.com</p>
+                      <p className="text-sm text-gray-500">
+                        {email ? email : "Loading..."}
+                      </p>
                     </div>
                   </div>
                   <button
                     className="w-full px-4 py-3 text-red-600 font-medium rounded-lg border border-red-200 hover:bg-red-50 transition-all duration-300"
-                    onClick={() => {
-                      setDrawer(false);
-                      handleLogout();
-                    }}
+                    onClick={handleLogout}
                   >
                     Logout
                   </button>
@@ -272,9 +259,6 @@ export default function NavBar() {
           </div>
         </div>
       )}
-
-      {/* Spacer for fixed navbar */}
-      <div className="h-16" />
     </>
   );
 }
