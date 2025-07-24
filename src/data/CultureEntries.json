@@ -2,169 +2,169 @@
   {
     "id": "1",
     "title": "Kutukan Raja Pulau Mintin",
-    "type": "Cerita Rakyat",
+    "type": "Folktale",
     "province": "Kalimantan Tengah",
-    "description": "Pada zaman dahulu, di sebuah pulau bernama Mintin, berkuasalah seorang raja yang adil dan bijaksana. Namun, sebuah kutukan menimpa sang raja dan mengubahnya menjadi seekor ular besar setelah ia melanggar sebuah pantangan.",
+    "description": "In ancient times, on an island called Mintin, reigned a just and wise king. However, a curse befell the king, transforming him into a giant snake after he violated a prohibition.",
     "image": "https://kubuku.id/api/generic/showCover/55364"
   },
   {
     "id": "2",
     "title": "Tari Kayau",
-    "type": "Tarian",
+    "type": "Dance",
     "province": "Kalimantan Tengah",
-    "description": "Tari Kayau adalah tarian perang suku Dayak yang menggambarkan keberanian dan kekuatan para prajurit dalam mempertahankan wilayah mereka. Gerakannya yang dinamis dan enerjik diiringi oleh musik tradisional yang membangkitkan semangat.",
+    "description": "Tari Kayau is a Dayak war dance that depicts the bravery and strength of warriors in defending their territory. Its dynamic and energetic movements are accompanied by traditional music that evokes spirit.",
     "image": "https://asset.kompas.com/crops/CLaiQjndHjZFliA7jrcBZb3lpC0=/2x3:800x402/1200x800/data/photo/2023/12/14/657af1d575a3b.jpg"
   },
   {
     "id": "3",
     "title": "Tari Saman",
-    "type": "Tarian",
+    "type": "Dance",
     "province": "Aceh",
-    "description": "Tari Saman adalah tarian suku Gayo yang menampilkan kekompakan gerakan tangan dan tepukan dada para penari. Tarian ini biasanya dibawakan tanpa iringan alat musik dan hanya mengandalkan suara para penari.",
+    "description": "Tari Saman is a Gayo tribal dance that showcases the synchronized hand movements and chest thumps of the dancers. This dance is usually performed without musical accompaniment, relying solely on the dancers' voices.",
     "image": "https://www.womensobsession.com/uploads/post_article/20190819150605-a712c.jpg"
   },
   {
     "id": "4",
     "title": "Rumah Adat Krong Bade",
-    "type": "Rumah Adat",
+    "type": "Traditional House",
     "province": "Aceh",
-    "description": "Rumah Krong Bade atau Rumoh Aceh adalah rumah panggung tradisional dengan ukiran-ukiran khas Aceh yang melambangkan status sosial pemiliknya. Rumah ini dirancang untuk tahan terhadap gempa dan banjir.",
+    "description": "Rumah Krong Bade, or Rumoh Aceh, is a traditional stilt house with distinctive Acehnese carvings symbolizing the owner's social status. This house is designed to withstand earthquakes and floods.",
     "image": "https://akcdn.detik.net.id/community/media/visual/2021/07/22/rumah-adat-aceh_169.jpeg?w=700&q=90"
   },
   {
     "id": "5",
     "title": "Lompat Batu Nias",
-    "type": "Tradisi",
+    "type": "Tradition",
     "province": "Sumatera Utara",
-    "description": "Fahombo atau Lompat Batu adalah ritual pendewasaan bagi para pemuda di Nias. Mereka harus melompati tumpukan batu setinggi lebih dari dua meter untuk membuktikan kedewasaan dan keberanian mereka.",
+    "description": "Fahombo or Stone Jumping is a coming-of-age ritual for young men in Nias. They must jump over a stack of stones more than two meters high to prove their maturity and courage.",
     "image": "https://asset.kompas.com/crops/gn9v154FKe3tSVI4vLyJ2qhAzTE=/359x209:1020x649/1200x800/data/photo/2022/01/28/61f39225d4237.png"
   },
   {
     "id": "6",
     "title": "Tari Tor Tor",
-    "type": "Tarian",
+    "type": "Dance",
     "province": "Sumatera Utara",
-    "description": "Tari Tor Tor adalah tarian tradisional suku Batak yang digunakan dalam berbagai upacara adat, seperti pernikahan dan penyambutan tamu. Gerakannya yang lambat dan khidmat memiliki makna filosofis yang dalam.",
+    "description": "Tari Tor Tor is a traditional Batak dance used in various traditional ceremonies, such as weddings and guest welcoming. Its slow and solemn movements carry deep philosophical meanings.",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Tor-Tor_Pose.jpg/500px-Tor-Tor_Pose.jpg"
   },
   {
     "id": "7",
     "title": "Cerita Rakyat Malin Kundang",
-    "type": "Cerita Rakyat",
+    "type": "Folktale",
     "province": "Sumatera Barat",
-    "description": "Kisah Malin Kundang bercerita tentang seorang anak yang durhaka kepada ibunya dan dikutuk menjadi batu. Legenda ini sangat terkenal dan menjadi pelajaran tentang pentingnya menghormati orang tua.",
+    "description": "The story of Malin Kundang tells of a disobedient son who was cursed into stone by his mother. This legend is very famous and serves as a lesson about the importance of respecting parents.",
     "image": "https://www.anakbisa.com/wp-content/uploads/2023/11/Malin-Kundang-2.png"
   },
   {
     "id": "8",
     "title": "Rumah Gadang",
-    "type": "Rumah Adat",
+    "type": "Traditional House",
     "province": "Sumatera Barat",
-    "description": "Rumah Gadang adalah rumah adat Minangkabau dengan atap gonjong yang khas menyerupai tanduk kerbau. Rumah ini merupakan simbol matrilineal dalam budaya Minangkabau.",
+    "description": "Rumah Gadang is a Minangkabau traditional house with characteristic 'gonjong' roofs resembling buffalo horns. This house is a symbol of matriarchy in Minangkabau culture.",
     "image": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Rumah_Gadang.jpg"
   },
   {
     "id": "9",
     "title": "Tari Zapin",
-    "type": "Tarian",
+    "type": "Dance",
     "province": "Riau",
-    "description": "Tari Zapin adalah tarian Melayu yang dipengaruhi oleh budaya Arab. Tarian ini biasanya dibawakan secara berpasangan dengan gerakan yang lincah dan diiringi musik gambus.",
+    "description": "Tari Zapin is a Malay dance influenced by Arab culture. This dance is usually performed in pairs with agile movements and accompanied by gambus music.",
     "image": "https://www.senibudayabetawi.com/wp-content/uploads/2023/06/687b9ec233069817a524bdb13d1ba255-1.jpg"
   },
   {
     "id": "10",
     "title": "Upacara Balimau Kasai",
-    "type": "Upacara Adat",
+    "type": "Traditional Ceremony",
     "province": "Riau",
-    "description": "Balimau Kasai adalah upacara penyucian diri yang dilakukan masyarakat Kampar untuk menyambut bulan suci Ramadhan. Tradisi ini melibatkan mandi dengan air yang dicampur jeruk dan wewangian.",
+    "description": "Balimau Kasai is a self-purification ceremony performed by the Kampar community to welcome the holy month of Ramadan. This tradition involves bathing with water mixed with lime and fragrances.",
     "image": "https://asumsi.co/wp-content/uploads/1618198975017_20210412_3.png"
   },
   {
     "id": "11",
     "title": "Tari Sekapur Sirih",
-    "type": "Tarian",
+    "type": "Dance",
     "province": "Jambi",
-    "description": "Tari Sekapur Sirih adalah tarian penyambutan tamu agung yang berasal dari Jambi. Para penari membawa cerana berisi sirih sebagai simbol penghormatan dan keramahtamahan.",
+    "description": "Tari Sekapur Sirih is a welcoming dance for esteemed guests from Jambi. The dancers carry a 'cerana' filled with betel leaves as a symbol of respect and hospitality.",
     "image": "https://akcdn.detik.net.id/community/media/visual/2024/01/16/tari-sekapur-sirih_169.jpeg?w=700&q=90"
   },
   {
     "id": "12",
     "title": "Rumah Adat Kajang Lako",
-    "type": "Rumah Adat",
+    "type": "Traditional House",
     "province": "Jambi",
-    "description": "Rumah Kajang Lako adalah rumah panggung khas Jambi yang memiliki bentuk atap melengkung seperti perahu. Rumah ini dibangun dengan bahan-bahan alami dari hutan.",
+    "description": "Rumah Kajang Lako is a typical Jambi stilt house with a curved roof shaped like a boat. This house is built with natural materials from the forest.",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Kajang_Leko_Rumah_adat_Jambi.jpg/500px-Kajang_Leko_Rumah_adat_Jambi.jpg"
   },
   {
     "id": "13",
     "title": "Aesan Gede",
-    "type": "Pakaian Adat",
+    "type": "Traditional Attire",
     "province": "Sumatera Selatan",
-    "description": "Aesan Gede adalah pakaian adat pengantin dari Palembang yang melambangkan keagungan dan kemewahan Kerajaan Sriwijaya. Pakaian ini didominasi oleh warna emas dan merah.",
+    "description": "Aesan Gede is a traditional bridal attire from Palembang that symbolizes the grandeur and luxury of the Srivijaya Kingdom. This attire is dominated by gold and red colors.",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Aesan_Gede_Songket_Palembang.jpg/330px-Aesan_Gede_Songket_Palembang.jpg"
   },
   {
     "id": "14",
     "title": "Tari Tanggai",
-    "type": "Tarian",
+    "type": "Dance",
     "province": "Sumatera Selatan",
-    "description": "Tari Tanggai adalah tarian penyambutan tamu yang dibawakan oleh penari wanita dengan mengenakan tanggai atau kuku palsu yang panjang dan lentik. Tarian ini melambangkan keanggunan dan keramahan.",
+    "description": "Tari Tanggai is a welcoming dance performed by female dancers wearing 'tanggai' or long, slender fake nails. This dance symbolizes grace and hospitality.",
     "image": "https://i0.wp.com/www.infobudaya.net/wp-content/uploads/2019/04/Tari-Tanggai.jpg?w=619&ssl=1"
   },
   {
     "id": "15",
     "title": "Tari Campak",
-    "type": "Tarian",
+    "type": "Dance",
     "province": "Bangka Belitung",
-    "description": "Tari Campak adalah tarian pergaulan yang ceria dari Bangka Belitung. Tarian ini biasanya ditampilkan pada saat panen raya sebagai ungkapan rasa syukur dan kegembiraan.",
+    "description": "Tari Campak is a cheerful social dance from Bangka Belitung. This dance is usually performed during harvest festivals as an expression of gratitude and joy.",
     "image": "https://disbudpar.beltim.go.id/sites/default/files/styles/galleryformatter_slide/public/images/berita/tari%20campak%202.jpg?itok=Td3RWZNE"
   },
   {
     "id": "16",
     "title": "Rumah Rakit Limas",
-    "type": "Rumah Adat",
+    "type": "Traditional House",
     "province": "Bangka Belitung",
-    "description": "Rumah Rakit Limas adalah rumah tradisional yang dibangun di atas rakit di sepanjang sungai. Rumah ini merupakan adaptasi masyarakat terhadap kondisi geografis daerah perairan.",
+    "description": "Rumah Rakit Limas is a traditional house built on rafts along the river. This house is an adaptation of the community to the geographical conditions of the aquatic areas.",
     "image": "https://asset-2.tstatic.net/tribunsumselwiki/foto/bank/images/rumah-limas.jpg"
   },
   {
     "id": "17",
     "title": "Tari Andun",
-    "type": "Tarian",
+    "type": "Dance",
     "province": "Bengkulu",
-    "description": "Tari Andun adalah tarian rakyat yang dilakukan secara berpasangan oleh pemuda-pemudi pada saat pesta perkawinan. Tarian ini merupakan sarana untuk mencari jodoh.",
+    "description": "Tari Andun is a folk dance performed in pairs by young men and women at wedding parties. This dance serves as a means to find a spouse.",
     "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhvfohvIqxCoUEOl2_m3LWHKYEUQIowroqiYz1mNrI-wwh6WYVZA_7SvsAxcjpiGv1VAwHgmnzptg5J0PHbMmDcHpQbxpHKUyKnMWsXE3KCvTIo5jLurV_k7hQ1_806HoSG287K5gJWr0T6/s400/andun.jpg"
   },
   {
     "id": "18",
     "title": "Upacara Tabot",
-    "type": "Upacara Adat",
+    "type": "Traditional Ceremony",
     "province": "Bengkulu",
-    "description": "Upacara Tabot adalah ritual tahunan untuk memperingati wafatnya cucu Nabi Muhammad, Husein bin Ali. Upacara ini menampilkan prosesi arakan tabot atau peti kayu yang dihias.",
+    "description": "The Tabot Ceremony is an annual ritual to commemorate the passing of Prophet Muhammad's grandson, Hussein bin Ali. This ceremony features a procession of decorated wooden chests or 'tabot'.",
     "image": "https://asset.kompas.com/crops/tV-Mry6-hBOaIb3Zz6hAZNmk_QI=/0x22:1024x705/1200x800/data/photo/2022/02/16/620c677c25992.jpg"
   },
   {
     "id": "19",
     "title": "Tari Jangget",
-    "type": "Tarian",
+    "type": "Dance",
     "province": "Lampung",
-    "description": "Tari Jangget adalah tarian agung yang berasal dari Lampung. Tarian ini biasanya ditampilkan pada saat upacara-upacara adat dan kebesaran untuk menyambut tamu penting.",
+    "description": "Tari Jangget is a grand dance from Lampung. This dance is usually performed at traditional ceremonies and festivities to welcome important guests.",
     "image": "https://akcdn.detik.net.id/community/media/visual/2024/03/09/tari-cangget-dari-lampung-utara_169.jpeg?w=700&q=90"
   },
   {
     "id": "20",
     "title": "Rumah Adat Nuwo Sesat",
-    "type": "Rumah Adat",
+    "type": "Traditional House",
     "province": "Lampung",
-    "description": "Nowo Sesat adalah rumah panggung besar yang berfungsi sebagai balai pertemuan adat bagi para penyimbang atau tokoh adat dalam masyarakat Lampung.",
+    "description": "Nowo Sesat is a large stilt house that serves as a traditional meeting hall for community leaders or 'penyimbang' in Lampung society.",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Rumah_adat_Nuwo_Sesat_lampung.jpg/500px-Rumah_adat_Nuwo_Sesat_lampung.jpg"
   },
   {
     "id": "21",
     "title": "Tari Sirih Kuning",
-    "type": "Tarian",
+    "type": "Dance",
     "province": "Kepulauan Riau",
-    "description": "Tari Sirih Kuning adalah tarian penyambutan yang dibawakan dengan lemah gemulai oleh para penari wanita. Gerakannya melambangkan penghormatan dan persembahan sirih sebagai tanda persahabatan.",
+    "description": "Tari Sirih Kuning is a welcoming dance gracefully performed by female dancers. Its movements symbolize respect and the offering of betel leaves as a sign of friendship.",
     "image": "https://www.senibudayabetawi.com/wp-content/uploads/2022/01/nandak-dua.jpg"
   }
 ]
