@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import Logo3 from "../assets/logo_3_pink.svg";
+import Logo3 from "../../public/Logo_3_pink.svg";
 import { useAuth } from "@/features/auth/useAuth";
 
 const navItems = [
