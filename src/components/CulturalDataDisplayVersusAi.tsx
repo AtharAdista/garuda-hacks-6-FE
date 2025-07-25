@@ -11,15 +11,23 @@ const getYouTubeVideoId = (url: string): string => {
 };
 
 interface CulturalDataDisplayProps {
+  playerHealth?: number;
+  aiHealth?: number;
+  gameOver?: boolean;
   onStart?: () => void;
   onComplete?: () => void;
   onCulturalDataUpdate?: (culturalData: any) => void;
+  onGameOver?: () => void;
 }
 
 export default function CulturalDataDisplayVersusAi({
+  playerHealth = 3,
+  aiHealth = 3,
+  gameOver = false,
   onStart,
   onComplete,
   onCulturalDataUpdate,
+  onGameOver,
 }: CulturalDataDisplayProps) {
   const { data, error, connect } = useSSE("/api/stream-data-questions");
 
@@ -31,6 +39,22 @@ export default function CulturalDataDisplayVersusAi({
   });
 
   const [isActive, setIsActive] = useState(false);
+  const [gameEnded, setGameEnded] = useState(false);
+
+  // Monitor health changes and game over state
+  useEffect(() => {
+    if (gameOver || playerHealth <= 0 || aiHealth <= 0) {
+      if (!gameEnded) {
+        setGameEnded(true);
+        setIsActive(false);
+        setDisplayState(prev => ({
+          ...prev,
+          displayState: "completed"
+        }));
+        onGameOver?.();
+      }
+    }
+  }, [gameOver, playerHealth, aiHealth, gameEnded, onGameOver]);
 
   const startDisplay = useCallback(() => {
     setIsActive(true);
@@ -144,13 +168,8 @@ export default function CulturalDataDisplayVersusAi({
   }, [error, isActive]);
 
   const renderLoadingSpinner = () => (
-    <div className="flex items-center justify-center space-x-3">
+    <div className="flex items-center justify-center">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-500"></div>
-      <span className="text-gray-700 font-semibold">
-        {displayState.displayState === "initial_loading"
-          ? "Loading cultural data..."
-          : "Loading next item..."}
-      </span>
     </div>
   );
 
@@ -204,7 +223,7 @@ export default function CulturalDataDisplayVersusAi({
         <div className="text-sm font-semibold text-rose-600">
           {displayState.currentIndex >= 0
             ? `${displayState.currentIndex + 1}/${data.length || "?"}`
-            : `Loading... (${data.length} items ready)`}
+            : `Preparing...`}
         </div>
         <div className="text-sm text-gray-600">
           {displayState.timeRemaining > 0 && (
@@ -262,14 +281,54 @@ export default function CulturalDataDisplayVersusAi({
   }
 
   if (displayState.displayState === "completed") {
+    const getGameResult = () => {
+      if (playerHealth <= 0 && aiHealth <= 0) {
+        return { title: "Draw Game!", message: "Both you and AI ran out of health", color: "yellow" };
+      } else if (playerHealth <= 0) {
+        return { title: "You Lost!", message: "Your health reached zero", color: "red" };
+      } else if (aiHealth <= 0) {
+        return { title: "You Won!", message: "AI's health reached zero", color: "green" };
+      } else {
+        return { title: "Cultural Journey Complete!", message: "Game finished naturally", color: "green" };
+      }
+    };
+
+    const result = getGameResult();
+
     return (
       <div className="bg-white/90 p-6 rounded-xl shadow-xl border border-rose-100">
-        <h3 className="text-lg font-bold text-green-600 mb-4">
-          Cultural Journey Complete!
+        <h3 className={`text-lg font-bold text-${result.color}-600 mb-4`}>
+          {result.title}
         </h3>
         <p className="text-gray-600 mb-4">
-          You've experienced {data.length} pieces of Indonesian culture
+          {result.message}
         </p>
+        
+        {/* Health Status */}
+        <div className="bg-gray-50 p-4 rounded-lg mb-4">
+          <h4 className="font-bold text-gray-800 mb-2">Final Health Status</h4>
+          <div className="flex justify-between">
+            <div className="text-center">
+              <p className="text-sm text-gray-600">Your Health</p>
+              <p className={`text-xl font-bold ${playerHealth <= 0 ? 'text-red-600' : 'text-rose-700'}`}>
+                {"❤️".repeat(Math.max(0, playerHealth))} {playerHealth > 0 ? "" : "💀"}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-600">AI Health</p>
+              <p className={`text-xl font-bold ${aiHealth <= 0 ? 'text-red-600' : 'text-blue-700'}`}>
+                {"❤️".repeat(Math.max(0, aiHealth))} {aiHealth > 0 ? "" : "💀"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {data.length > 0 && (
+          <p className="text-gray-600 text-sm mb-4">
+            You experienced {data.length} pieces of Indonesian culture during this game.
+          </p>
+        )}
+
         <button
           onClick={() => {
             setDisplayState({
@@ -279,6 +338,7 @@ export default function CulturalDataDisplayVersusAi({
               totalItems: 0,
             });
             setIsActive(false);
+            setGameEnded(false);
           }}
           className="w-full px-4 py-2 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 text-white rounded-lg font-bold hover:from-rose-500 hover:to-pink-600 transition-all"
         >

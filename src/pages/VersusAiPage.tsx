@@ -403,20 +403,12 @@ export default function VersusAiPage() {
 
         <div className="flex justify-center gap-10 mb-4">
           <div className="bg-white px-4 py-2 rounded-lg shadow">
-            <p
-              className={`font-bold ${
-                playerHealth <= 1 ? "text-red-600" : "text-rose-700"
-              }`}
-            >
+            <p className="text-rose-700 font-bold">
               Your Health: ❤️ {playerHealth}
             </p>
           </div>
           <div className="bg-white px-4 py-2 rounded-lg shadow">
-            <p
-              className={`font-bold ${
-                opponentHealth <= 1 ? "text-red-600" : "text-blue-700"
-              }`}
-            >
+            <p className="text-blue-700 font-bold">
               AI Health: ❤️ {opponentHealth}
             </p>
           </div>
@@ -638,15 +630,6 @@ export default function VersusAiPage() {
           </div>
         )}
 
-        {(isSubmitted || gameOver) && !gameResult && (
-          <div className="flex justify-center mb-4">
-            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded-lg">
-              ⚠️ Province locked! You cannot change your selection after
-              submission.
-            </div>
-          </div>
-        )}
-
         {/* Submit Button */}
         {!isSubmitted && selectedProvince && !gameOver && (
           <div className="text-center mb-6">
@@ -660,6 +643,15 @@ export default function VersusAiPage() {
           </div>
         )}
 
+        {(isSubmitted || gameOver) && !gameResult && (
+          <div className="flex justify-center mb-4">
+            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded-lg">
+              ⚠️ Province locked! You cannot change your selection after
+              submission.
+            </div>
+          </div>
+        )}
+
         {/* Main Game Content - Map and Cultural Experience Side by Side */}
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Map Section */}
@@ -668,6 +660,9 @@ export default function VersusAiPage() {
           </div>
 
           <CulturalDataDisplayVersusAi
+            playerHealth={playerHealth}
+            aiHealth={opponentHealth}
+            gameOver={gameOver}
             onCulturalDataUpdate={handleCulturalDataUpate}
           />
         </div>

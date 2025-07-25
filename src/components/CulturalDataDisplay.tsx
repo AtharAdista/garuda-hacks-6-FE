@@ -35,16 +35,24 @@ interface CulturalDataDisplayProps {
   socket: Socket | null;
   roomId: string | null;
   gameStarted?: boolean;
+  playerHealth?: number;
+  opponentHealth?: number;
+  gameOver?: boolean;
   onStart?: () => void;
   onComplete?: () => void;
+  onGameOver?: () => void;
 }
 
 export default function CulturalDataDisplay({
   socket,
   roomId,
   gameStarted = false,
+  playerHealth = 3,
+  opponentHealth = 3,
+  gameOver = false,
   onStart,
   onComplete,
+  onGameOver,
 }: CulturalDataDisplayProps) {
   const [displayState, setDisplayState] = useState<CulturalDisplayState>({
     currentIndex: -1,
@@ -56,6 +64,22 @@ export default function CulturalDataDisplay({
 
   const [error, setError] = useState<string | null>(null);
   const [isActive, setIsActive] = useState(false);
+  const [gameEnded, setGameEnded] = useState(false);
+
+  // Monitor health changes and game over state
+  useEffect(() => {
+    if (gameOver || playerHealth <= 0 || opponentHealth <= 0) {
+      if (!gameEnded) {
+        setGameEnded(true);
+        setIsActive(false);
+        setDisplayState(prev => ({
+          ...prev,
+          displayState: "completed"
+        }));
+        onGameOver?.();
+      }
+    }
+  }, [gameOver, playerHealth, opponentHealth, gameEnded, onGameOver]);
 
   // WebSocket event handling
   useEffect(() => {
@@ -191,13 +215,8 @@ export default function CulturalDataDisplay({
   }, [socket, roomId, isActive, gameStarted]);
 
   const renderLoadingSpinner = () => (
-    <div className="flex items-center justify-center space-x-3">
+    <div className="flex items-center justify-center">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-500"></div>
-      <span className="text-gray-700 font-semibold">
-        {displayState.displayState === "initial_loading"
-          ? "Loading cultural data..."
-          : "Loading next item..."}
-      </span>
     </div>
   );
 
@@ -278,7 +297,7 @@ export default function CulturalDataDisplay({
     const getPhaseLabel = () => {
       switch (displayState.displayState) {
         case "initial_loading":
-          return "Loading cultural data...";
+          return "Preparing game...";
         case "displaying":
           return "Guess the province! (or waiting for other player)";
         case "inter_loading":
@@ -297,7 +316,7 @@ export default function CulturalDataDisplay({
             ? `Round ${displayState.currentIndex + 1}/${
                 displayState.totalItems || "?"
               } - ${getPhaseLabel()}`
-            : `${getPhaseLabel()} (${displayState.totalItems} items ready)`}
+            : getPhaseLabel()}
         </div>
         <div className="text-sm text-gray-600">
           {displayState.timeRemaining > 0 && (
@@ -345,18 +364,53 @@ export default function CulturalDataDisplay({
   }
 
   if (displayState.displayState === "completed") {
+    const getGameResult = () => {
+      if (playerHealth <= 0 && opponentHealth <= 0) {
+        return { title: "Draw Game!", message: "Both players ran out of health", color: "yellow" };
+      } else if (playerHealth <= 0) {
+        return { title: "You Lost!", message: "Your health reached zero", color: "red" };
+      } else if (opponentHealth <= 0) {
+        return { title: "You Won!", message: "Opponent's health reached zero", color: "green" };
+      } else {
+        return { title: "Cultural Journey Complete!", message: "Game finished naturally", color: "green" };
+      }
+    };
+
+    const result = getGameResult();
+
     return (
       <div className="bg-white/90 p-6 rounded-xl shadow-xl border border-rose-100">
-        <h3 className="text-lg font-bold text-green-600 mb-4">
-          Cultural Journey Complete!
+        <h3 className={`text-lg font-bold text-${result.color}-600 mb-4`}>
+          {result.title}
         </h3>
         <p className="text-gray-600 mb-4">
-          You've experienced {displayState.totalItems} pieces of Indonesian
-          culture
+          {result.message}
         </p>
-        <p className="text-gray-600 text-sm">
-          Continue playing or start a new game for more cultural discoveries!
-        </p>
+        
+        {/* Health Status */}
+        <div className="bg-gray-50 p-4 rounded-lg mb-4">
+          <h4 className="font-bold text-gray-800 mb-2">Final Health Status</h4>
+          <div className="flex justify-between">
+            <div className="text-center">
+              <p className="text-sm text-gray-600">Your Health</p>
+              <p className={`text-xl font-bold ${playerHealth <= 0 ? 'text-red-600' : 'text-rose-700'}`}>
+                {"❤️".repeat(Math.max(0, playerHealth))} {playerHealth > 0 ? "" : "💀"}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-600">Opponent Health</p>
+              <p className={`text-xl font-bold ${opponentHealth <= 0 ? 'text-red-600' : 'text-blue-700'}`}>
+                {"❤️".repeat(Math.max(0, opponentHealth))} {opponentHealth > 0 ? "" : "💀"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {displayState.totalItems > 0 && (
+          <p className="text-gray-600 text-sm">
+            You experienced {displayState.totalItems} pieces of Indonesian culture during this game.
+          </p>
+        )}
       </div>
     );
   }

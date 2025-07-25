@@ -55,12 +55,10 @@ export default function GamePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("AAAA");
     if (gameOverData) {
       generateMatchSummary();
-
     }
-  }, []);
+  }, [gameOverData]);
 
   const [gameStarted, setGameStarted] = useState(false);
   const [showReadyModal, setShowReadyModal] = useState(true);
@@ -885,6 +883,9 @@ export default function GamePage() {
             socket={socketRef.current}
             roomId={currentRoomId}
             gameStarted={gameStarted}
+            playerHealth={playerHealth}
+            opponentHealth={opponentHealth}
+            gameOver={!!gameOverData}
           />
         </div>
       </div>
