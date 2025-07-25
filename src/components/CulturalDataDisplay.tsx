@@ -94,9 +94,18 @@ export default function CulturalDataDisplay({
       console.log("CulturalDataDisplay: Socket connected, ready to receive cultural data");
     };
 
-    const handleDisconnect = () => {
-      console.log("CulturalDataDisplay: Socket disconnected");
+    const handleDisconnect = (reason: string) => {
+      console.log("CulturalDataDisplay: Socket disconnected, reason:", reason);
       setIsActive(false);
+      
+      // Only show error for unexpected disconnects
+      if (reason !== "io client disconnect" && reason !== "client namespace disconnect") {
+        setError("Connection lost. Cultural data will resume when reconnected.");
+        setDisplayState(prev => ({
+          ...prev,
+          displayState: "error",
+        }));
+      }
     };
 
     // Add all event listeners

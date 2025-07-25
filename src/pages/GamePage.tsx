@@ -74,6 +74,36 @@ export default function GamePage() {
     const socket = io(import.meta.env.VITE_BACKEND_URL);
     socketRef.current = socket;
 
+    // Handle page refresh/close with proper cleanup
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      console.log("Page is being unloaded, cleaning up socket connection");
+      if (socket.connected) {
+        socket.emit("leaveRoom", {
+          roomId: currentRoomId,
+          userId: currentPlayerId,
+        });
+        socket.disconnect();
+      }
+      localStorage.removeItem("gameRoom");
+    };
+
+    // Add event listeners for cleanup
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    
+    // Handle visibility change (when user switches tabs or minimizes)
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        console.log("Page hidden, maintaining socket connection");
+      } else {
+        console.log("Page visible again, checking socket connection");
+        if (!socket.connected) {
+          socket.connect();
+        }
+      }
+    };
+    
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     socket.on("connect", () => {
       console.log("GamePage socket connected:", socket.id);
       setTimeout(() => {
@@ -196,6 +226,11 @@ export default function GamePage() {
     socket.on("roomData", handleRoomData);
 
     return () => {
+      // Remove event listeners
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      
+      // Remove socket event listeners
       socket.off("connect");
       socket.off("roomRejoined");
       socket.off("error");
@@ -208,11 +243,13 @@ export default function GamePage() {
       socket.off("roomData", handleRoomData);
 
       console.log("GamePage cleanup: disconnecting socket and leaving room");
-      socket.emit("leaveRoom", {
-        roomId: currentRoomId,
-        userId: currentPlayerId,
-      });
-      socket.disconnect();
+      if (socket.connected) {
+        socket.emit("leaveRoom", {
+          roomId: currentRoomId,
+          userId: currentPlayerId,
+        });
+        socket.disconnect();
+      }
 
       localStorage.removeItem("gameRoom");
     };
