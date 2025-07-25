@@ -54,7 +54,7 @@ export default function LoginForm({
       {error && <div className="text-red-600">{error}</div>}
       <button
         type="submit"
-        className="bg-pink-600 text-white px-4 py-2 rounded w-full flex items-center justify-center"
+        className="bg-rose-600 text-white px-4 py-2 rounded w-full flex items-center justify-center"
         disabled={loading}
       >
         {loading ? (

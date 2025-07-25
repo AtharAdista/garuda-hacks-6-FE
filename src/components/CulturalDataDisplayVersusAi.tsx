@@ -193,20 +193,6 @@ export default function CulturalDataDisplayVersusAi({
             <span className="text-gray-500">Media not available</span>
           </div>
         )}
-
-        {/* Cultural Information */}
-        <div className="space-y-2">
-          <h3 className="text-xl font-bold text-rose-600">
-            {currentItem.cultural_context}
-          </h3>
-          <p className="text-lg font-semibold text-gray-800">
-            Province: {currentItem.province}
-          </p>
-          <p className="text-md text-gray-700">
-            Category: {currentItem.cultural_category}
-          </p>
-          <p className="text-sm text-gray-600">Query: {currentItem.query}</p>
-        </div>
       </div>
     );
   };

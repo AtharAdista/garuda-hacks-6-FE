@@ -4,6 +4,8 @@ import "leaflet/dist/leaflet.css";
 import type { Feature as GeoJSONFeature } from "geojson";
 import geoData from "../data/38ProvinsiIndonesia-Provinsi.json";
 
+
+
 import { provinceInfo, kodeToId } from "../data/provinceInfo";
 import CulturalDataDisplayVersusAi from "@/components/CulturalDataDisplayVersusAi";
 
@@ -56,7 +58,7 @@ export default function VersusAiPage() {
   const fetchAi = async (input_url: string, actual_province: string) => {
     try {
       const response = await fetch(
-        "https://culturate-ai-257967680019.us-central1.run.app/game/guess",
+        `${import.meta.env.VITE_AI_URL}/game/guess`,
         {
           method: "POST",
           headers: {

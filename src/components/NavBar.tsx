@@ -6,7 +6,9 @@ import { useAuth } from "@/features/auth/useAuth";
 
 const navItems = [
   { text: "Home", to: "/" },
+  
   { text: "Encyclopedia", to: "/encyclopedia" },
+  { text: "About Us", to: "/aboutus" },
 ];
 
 export default function NavBar() {
@@ -54,13 +56,13 @@ export default function NavBar() {
                   to={item.to}
                   className={`relative px-4 py-4 rounded-lg font-medium transition-all duration-300 ${
                     location.pathname === item.to
-                      ? "text-rose-600 bg-pink-50 shadow-sm"
+                      ? "text-rose-600 bg-rose-50 shadow-sm"
                       : "text-gray-700 hover:text-rose-800 hover:bg-gray-50"
                   }`}
                 >
                   {item.text}
                   {location.pathname === item.to && (
-                    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-pink-600 rounded-full"></div>
+                    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-rose-600 rounded-full"></div>
                   )}
                 </Link>
               ))}
@@ -78,7 +80,7 @@ export default function NavBar() {
                     Login
                   </button>
                   <button
-                    className="px-6 py-2 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                    className="px-6 py-2 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
                     onClick={handleRegister}
                   >
                     Sign Up
@@ -160,7 +162,7 @@ export default function NavBar() {
 
       {/* Mobile Sidebar */}
       {drawer && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-1000 md:hidden">
           {/* Overlay */}
           <div
             className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
@@ -199,7 +201,7 @@ export default function NavBar() {
                   to={item.to}
                   className={`flex items-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
                     location.pathname === item.to
-                      ? "bg-pink-50 text-pink-600 shadow-sm"
+                      ? "bg-rose-50 text-rose-600 shadow-sm"
                       : "text-gray-700 hover:bg-gray-50"
                   }`}
                   onClick={() => setDrawer(false)}
@@ -220,7 +222,7 @@ export default function NavBar() {
                     Login
                   </button>
                   <button
-                    className="w-full px-4 py-3 bg-gradient-to-r from-pink-600 to-pink-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                    className="w-full px-4 py-3 bg-gradient-to-r from-rose-600 to-rose-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
                     onClick={handleRegister}
                   >
                     Sign Up
@@ -229,7 +231,7 @@ export default function NavBar() {
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-                    <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold uppercase">
+                    <div className="w-10 h-10 bg-gradient-to-br from-rose-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold uppercase">
                       {username ? username.charAt(0) : "?"}
                     </div>
                     <div>

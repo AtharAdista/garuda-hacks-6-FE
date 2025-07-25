@@ -43,9 +43,10 @@ export default function ReadyModal({
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
             Ready to Explore Indonesian Culture?
           </h2>
-          
+
           <p className="text-gray-600 mb-6">
-            Get ready to discover amazing Indonesian provinces through their unique cultural heritage!
+            Get ready to discover amazing Indonesian provinces through their
+            unique cultural heritage!
           </p>
 
           {/* Ready Status */}
@@ -75,7 +76,10 @@ export default function ReadyModal({
                 >
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <span className="text-sm font-medium">
-                    {playerId === currentUserId ? "You" : `Player ${playerId.slice(-4)}`} is ready!
+                    {playerId === currentUserId
+                      ? "You"
+                      : `Player ${playerId.slice(-4)}`}{" "}
+                    is ready!
                   </span>
                 </div>
               ))}
@@ -114,7 +118,8 @@ export default function ReadyModal({
           {/* Waiting Message */}
           {!allReady && readyCount > 0 && (
             <div className="mt-4 text-gray-500 text-sm">
-              Waiting for {totalPlayers - readyCount} more player{totalPlayers - readyCount !== 1 ? 's' : ''} to be ready...
+              Waiting for {totalPlayers - readyCount} more player
+              {totalPlayers - readyCount !== 1 ? "s" : ""} to be ready...
             </div>
           )}
         </div>

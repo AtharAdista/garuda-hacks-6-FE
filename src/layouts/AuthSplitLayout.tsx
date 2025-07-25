@@ -6,7 +6,7 @@ export default function AuthSplitLayout() {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-pink-200 to-rose-200">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-rose-200 to-rose-300">
       <div className="w-full max-w-4xl shadow-2xl rounded-2xl overflow-hidden bg-white/90 relative h-[600px]">
         {/* Sliding Container - 200% width to hold both layouts */}
         <div
@@ -18,8 +18,8 @@ export default function AuthSplitLayout() {
           {/* LOGIN LAYOUT - takes 50% of the sliding container (full width of visible area) */}
           <div className="w-1/2 h-full flex">
             {/* Gradient Left for Login */}
-            <div className="w-1/2 bg-gradient-to-tr from-rose-100 via-pink-200 to-pink-400 flex items-center justify-center">
-              <div className="text-5xl font-black text-rose-400 opacity-30 select-none">
+            <div className="w-1/2 bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 flex items-center justify-center">
+              <div className="text-8xl font-black text-rose-300 opacity-90 select-none">
                 Culturate
               </div>
             </div>
@@ -66,8 +66,8 @@ export default function AuthSplitLayout() {
             </div>
 
             {/* Gradient Right for Register */}
-            <div className="w-1/2 bg-gradient-to-tl from-rose-100 via-pink-200 to-pink-400 flex items-center justify-center">
-              <div className="text-3xl font-black text-rose-400 opacity-30 select-none">
+            <div className="w-1/2 bg-gradient-to-tl  from-rose-400 via-rose-500 to-rose-600  flex items-center justify-center">
+              <div className="text-8xl font-black text-rose-100 opacity-80 select-none">
                 One Culture at a time
               </div>
             </div>

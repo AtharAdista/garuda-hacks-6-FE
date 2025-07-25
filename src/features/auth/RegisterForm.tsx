@@ -57,7 +57,7 @@ export default function RegisterForm({ children }: { children?: React.ReactNode 
       {success && <div className="text-green-600">{success}</div>}
       <button
         type="submit"
-        className="bg-pink-600 text-white px-4 py-2 rounded w-full flex items-center justify-center"
+        className="bg-rose-600 text-white px-4 py-2 rounded w-full flex items-center justify-center"
         disabled={loading}
       >
         {loading ? (

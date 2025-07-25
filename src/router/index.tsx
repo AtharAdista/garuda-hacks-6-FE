@@ -9,6 +9,7 @@ import RoomPage from "@/pages/RoomPage";
 import ProfilePage from "@/pages/ProfilePage";
 import AuthSplitLayout from "@/layouts/AuthSplitLayout";
 import VersusAiPage from "@/pages/VersusAiPage";
+import AboutUsPage from "@/pages/AboutUsPage";
 
 export default function AppRouter() {
   return (
@@ -22,6 +23,7 @@ export default function AppRouter() {
           <Route path="room" element={<RoomPage />} />
           <Route path="room/:id" element={<VersusAiPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="aboutus" element={<AboutUsPage />} />
         </Route>
         {/* Layout auth tanpa NavBar */}
         <Route element={<AuthSplitLayout />}>
