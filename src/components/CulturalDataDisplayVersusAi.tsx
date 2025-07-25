@@ -13,11 +13,14 @@ const getYouTubeVideoId = (url: string): string => {
 interface CulturalDataDisplayProps {
   onStart?: () => void;
   onComplete?: () => void;
+  onAnswer?: (answer: boolean) => void;
+  province?: string; // Optional province filter
 }
 
 export default function CulturalDataDisplayVersusAi({
   onStart,
   onComplete,
+  
 }: CulturalDataDisplayProps) {
   const { data, error, connect } = useSSE("/api/stream-data-questions");
 

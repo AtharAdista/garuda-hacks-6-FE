@@ -28,6 +28,11 @@ export default function HomePage() {
     fetchUser();
   }, []);
 
+  const handleVersusAi = async () => {
+    const roomId = crypto.randomUUID();
+    navigate(`/room/${roomId}`);
+  };
+
   const handleCreateRoom = () => {
     if (!socket || !isConnected) return;
 
@@ -50,7 +55,7 @@ export default function HomePage() {
       });
     };
 
-    const onError = (err: { message: any; }) => {
+    const onError = (err: { message: any }) => {
       console.log(err);
       alert(err.message);
       socket.off("roomCreated", onRoomCreated);
@@ -84,7 +89,7 @@ export default function HomePage() {
       });
     };
 
-    const onError = (err: { message: any; }) => {
+    const onError = (err: { message: any }) => {
       console.log(err);
       alert(err.message);
       socket.off("joinedRoom", onJoinedRoom);
@@ -131,6 +136,13 @@ export default function HomePage() {
 
           {/* Create & Join Room Side by Side */}
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-xl mb-4">
+            <button
+              onClick={handleVersusAi}
+              className="flex-1 px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-xl text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 mb-3 md:mb-0"
+            >
+              Versus AI
+            </button>
+
             {/* Create Room */}
             <button
               onClick={handleCreateRoom}
