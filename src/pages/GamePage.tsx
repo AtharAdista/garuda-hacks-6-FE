@@ -6,10 +6,11 @@ import CulturalDataDisplay from "@/components/CulturalDataDisplay";
 
 import geoData from "../data/38ProvinsiIndonesia-Provinsi.json";
 import { io, Socket } from "socket.io-client";
-import { useLocation } from "react-router-dom";
 import ReadyModal from "@/components/ReadyModal";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { provinceInfo, kodeToId } from "../data/provinceInfo";
+import type { GameOverData } from "@/interfaces/game-type";
 
 export default function GamePage() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -44,6 +45,21 @@ export default function GamePage() {
   const [bothSubmitted, setBothSubmitted] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [bothSubmittedMessage, setBothSubmittedMessage] = useState("");
+  const [playerHealth, setPlayerHealth] = useState(3);
+  const [opponentHealth, setOpponentHealth] = useState(3);
+  const [gameOverData, setGameOverData] = useState<GameOverData | null>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("AAAA");
+    if (gameOverData) {
+      const timeout = setTimeout(() => {
+        navigate("/"); // redirect ke halaman utama
+      }, 5000); // tunggu 5 detik sebelum redirect
+
+      return () => clearTimeout(timeout); // bersihkan timeout saat komponen unmount
+    }
+  }, [gameOverData, navigate]);
   const [gameStarted, setGameStarted] = useState(false);
   const [showReadyModal, setShowReadyModal] = useState(true);
   const [readyPlayers, setReadyPlayers] = useState<string[]>([]);
@@ -87,14 +103,14 @@ export default function GamePage() {
       console.error("GamePage socket error:", error);
     });
 
-    const handleProvinceSelected = ({ province, userId }) => {
+    const handleProvinceSelected = ({ province, userId }: any) => {
       console.log("Province selected:", province, "by user:", userId);
       if (userId !== currentPlayerId) {
         console.log("Opponent is hovering/selecting:", province.name);
       }
     };
 
-    const handleOpponentSubmitted = ({ userId, province }) => {
+    const handleOpponentSubmitted = ({ userId, province }: any) => {
       console.log(
         "Opponent has submitted:",
         userId,
@@ -112,21 +128,24 @@ export default function GamePage() {
       }
     };
 
-    const handleBothPlayersSubmitted = ({
-      message,
-      submissionCount,
-      totalPlayers,
-    }) => {
+    const handleBothPlayersSubmitted = ({ message }: any) => {
       console.log("Both players submitted:", message);
       setBothSubmitted(true);
       setBothSubmittedMessage(message);
     };
 
-    const handleShowResults = ({ results }) => {
+    const handleShowResults = ({ results }: any) => {
       console.log("Show results:", results);
       setShowResults(true);
-      const opponentResult = results.find((r) => r.userId !== currentPlayerId);
+      const opponentResult = results.find(
+        (r: any) => r.userId !== currentPlayerId
+      );
+
+      const myResult = results.find((r: any) => r.userId === currentPlayerId);
+
+      if (myResult) setPlayerHealth(myResult.health);
       if (opponentResult) {
+        setOpponentHealth(opponentResult.health);
         setOpponentProvince(opponentResult.province);
       }
     };
@@ -148,6 +167,26 @@ export default function GamePage() {
       setTotalPlayers(roomData.playerCount);
     };
 
+    socket.on("nextRound", ({ roundMessage, players }: any) => {
+      console.log("Next round triggered:", roundMessage);
+
+      const me = players.find((p: any) => p.userId === currentPlayerId);
+      const opponent = players.find((p: any) => p.userId !== currentPlayerId);
+
+      if (me) setPlayerHealth(me.health);
+      if (opponent) setOpponentHealth(opponent.health);
+
+      setShowResults(false);
+      setHasSubmitted(false);
+      setOpponentHasSubmitted(false);
+      setBothSubmitted(false);
+      setSelectedProvince(null);
+      selectedLayerRef.current = null;
+    });
+
+    socket.on("gameOver", ({ winner, players }: any) => {
+      setGameOverData({ winner, players });
+    });
     socket.on("provinceSelected", handleProvinceSelected);
     socket.on("opponentSubmitted", handleOpponentSubmitted);
     socket.on("bothPlayersSubmitted", handleBothPlayersSubmitted);
@@ -366,7 +405,7 @@ export default function GamePage() {
         onReady={handlePlayerReady}
         onUnready={handlePlayerUnready}
       />
-      
+
       <div className="h-20" />
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="mb-8 text-center">
@@ -377,6 +416,37 @@ export default function GamePage() {
             Explore Indonesian provinces while playing
           </p>
         </div>
+
+        <div className="flex justify-center gap-10 mb-4">
+          <div className="bg-white px-4 py-2 rounded-lg shadow">
+            <p className="text-rose-700 font-bold">
+              Your Health: ❤️ {playerHealth}
+            </p>
+          </div>
+          <div className="bg-white px-4 py-2 rounded-lg shadow">
+            <p className="text-blue-700 font-bold">
+              Opponent Health: ❤️ {opponentHealth}
+            </p>
+          </div>
+        </div>
+
+        {gameOverData && (
+          <div className="text-center p-6 bg-white border border-rose-300 rounded-xl shadow-xl mt-6">
+            <h2 className="text-3xl font-bold text-rose-700 mb-2">
+              🏁 Game Finish
+            </h2>
+            {gameOverData.winner ? (
+              <p className="text-xl">
+                {gameOverData.winner === currentPlayerId
+                  ? "🎉 You Win!"
+                  : "😢 You Lose!"}
+              </p>
+            ) : (
+              <p className="text-xl">🤝 It's a draw!</p>
+            )}
+            <p className="mt-2 text-gray-600">Thank you for playing!</p>
+          </div>
+        )}
 
         <div className="relative">
           {/* Submit Button */}
@@ -535,7 +605,7 @@ export default function GamePage() {
 
         {/* Cultural Data Display Section */}
         <div className="lg:col-span-1">
-          <CulturalDataDisplay 
+          <CulturalDataDisplay
             socket={socketRef.current}
             roomId={currentRoomId}
             gameStarted={gameStarted}

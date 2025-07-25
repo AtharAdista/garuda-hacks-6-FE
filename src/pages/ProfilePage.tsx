@@ -33,7 +33,7 @@ export default function ProfilePage() {
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 relative">
         <div className="flex flex-col items-center">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-400 to-blue-400 flex items-center justify-center shadow-lg mb-4">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-rose-400 to-red-400 flex items-center justify-center shadow-lg mb-4">
             <span className="text-4xl text-white font-bold">
               {user?.username?.[0]?.toUpperCase() || "U"}
             </span>

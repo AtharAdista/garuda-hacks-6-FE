@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import Logo3 from "../assets/logo_3_pink.svg";
+import Logo3 from "../../public/Logo_3_pink.svg";
 import { useAuth } from "@/features/auth/useAuth";
 
 const navItems = [
   { text: "Home", to: "/" },
-  { text: "Play", to: "/game" },
   { text: "Encyclopedia", to: "/encyclopedia" },
 ];
 
@@ -43,7 +42,7 @@ export default function NavBar() {
             {/* Logo Section */}
             <div className="flex items-center">
               <Link to="/" className="flex items-center gap-3 group">
-                <img src={Logo3} alt="Logo" className="w-24 h-24 " />
+                <img src={Logo3} alt="Logo" className="w-30 h-30 " />
               </Link>
             </div>
 
@@ -53,15 +52,15 @@ export default function NavBar() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  className={`relative px-4 py-4 rounded-lg font-medium transition-all duration-300 ${
                     location.pathname === item.to
-                      ? "text-pink-600 bg-pink-50 shadow-sm"
-                      : "text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                      ? "text-rose-600 bg-pink-50 shadow-sm"
+                      : "text-gray-700 hover:text-rose-800 hover:bg-gray-50"
                   }`}
                 >
                   {item.text}
                   {location.pathname === item.to && (
-                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-pink-600 rounded-full"></div>
+                    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-pink-600 rounded-full"></div>
                   )}
                 </Link>
               ))}
@@ -92,7 +91,7 @@ export default function NavBar() {
                     className="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-all duration-300"
                     onClick={() => setShowDropdown((v) => !v)}
                   >
-                    <div className="w-9 h-9 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg font-bold uppercase">
+                    <div className="w-9 h-9 bg-gradient-to-br from-rose-400 to-rose-600 rounded-full flex items-center justify-center text-white text-lg font-bold uppercase">
                       {username ? username.charAt(0) : "?"}
                     </div>
                     <div className="flex flex-col items-start">
@@ -125,13 +124,6 @@ export default function NavBar() {
                         onClick={() => setShowDropdown(false)}
                       >
                         Profile
-                      </Link>
-                      <Link
-                        to="/settings"
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                        onClick={() => setShowDropdown(false)}
-                      >
-                        Settings
                       </Link>
                       <hr className="my-2 border-gray-200" />
                       <button
@@ -180,7 +172,7 @@ export default function NavBar() {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center gap-3">
-                  <img src={Logo3} alt="Logo" className="w-20 h-20" />
+                <img src={Logo3} alt="Logo" className="w-20 h-20" />
               </div>
               <button
                 className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors duration-200"
