@@ -2,6 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { GameStartedPayload, PlayerLeftPayload, RoomDataPayload, RoomEventPayload } from "@/interfaces/game-type";
+import {
+  Users,
+  Wifi,
+  WifiOff,
+  Copy,
+  CheckCircle,
+  Play,
+  Crown,
+  Heart,
+  Loader2,
+  Share2,
+} from "lucide-react";
+
 
 const SOCKET_URL = import.meta.env.VITE_BACKEND_URL;
 

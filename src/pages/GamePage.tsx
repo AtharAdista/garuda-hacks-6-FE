@@ -148,8 +148,8 @@ export default function GamePage() {
     socket.on("nextRound", ({ roundMessage, players }: any) => {
       console.log("Next round triggered:", roundMessage);
 
-      const me = players.find((p) => p.userId === currentPlayerId);
-      const opponent = players.find((p) => p.userId !== currentPlayerId);
+      const me = players.find((p: any) => p.userId === currentPlayerId);
+      const opponent = players.find((p: any) => p.userId !== currentPlayerId);
 
       if (me) setPlayerHealth(me.health);
       if (opponent) setOpponentHealth(opponent.health);
