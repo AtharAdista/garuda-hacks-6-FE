@@ -79,7 +79,7 @@ export default function GamePage() {
     socketRef.current = socket;
 
     // Handle page refresh/close with proper cleanup
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    const handleBeforeUnload = () => {
       console.log("Page is being unloaded, cleaning up socket connection");
       if (socket.connected) {
         socket.emit("leaveRoom", {
@@ -93,7 +93,7 @@ export default function GamePage() {
 
     // Add event listeners for cleanup
     window.addEventListener("beforeunload", handleBeforeUnload);
-    
+
     // Handle visibility change (when user switches tabs or minimizes)
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -105,7 +105,7 @@ export default function GamePage() {
         }
       }
     };
-    
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     socket.on("connect", () => {
@@ -168,12 +168,23 @@ export default function GamePage() {
       setBothSubmittedMessage(message);
     };
 
-    const handleShowResults = ({ results, correctAnswer, culturalData }: any) => {
-      console.log("Show results:", results, "Correct answer:", correctAnswer, "Cultural data:", culturalData);
+    const handleShowResults = ({
+      results,
+      correctAnswer,
+      culturalData,
+    }: any) => {
+      console.log(
+        "Show results:",
+        results,
+        "Correct answer:",
+        correctAnswer,
+        "Cultural data:",
+        culturalData
+      );
       setShowResults(true);
       setCorrectAnswer(correctAnswer);
       setCurrentCulturalData(culturalData);
-      
+
       const opponentResult = results.find(
         (r: any) => r.userId !== currentPlayerId
       );
@@ -197,10 +208,10 @@ export default function GamePage() {
         opponentCorrect: opponentResult?.isCorrect || false,
         playerHealthAfter: myResult?.health || 0,
         opponentHealthAfter: opponentResult?.health || 0,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
-      setGameHistory(prev => [...prev, roundData]);
+      setGameHistory((prev) => [...prev, roundData]);
     };
 
     const handleGameStarted = ({ roomId }: any) => {
@@ -255,7 +266,7 @@ export default function GamePage() {
       // Remove event listeners
       window.removeEventListener("beforeunload", handleBeforeUnload);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      
+
       // Remove socket event listeners
       socket.off("connect");
       socket.off("roomRejoined");
@@ -517,25 +528,41 @@ export default function GamePage() {
             <h2 className="text-2xl font-bold text-blue-700 mb-4 text-center">
               📊 Game Recap
             </h2>
-            
+
             {/* Game Statistics */}
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-blue-50 p-4 rounded-lg">
                 <h3 className="font-bold text-blue-800">Your Performance</h3>
                 <p className="text-sm text-blue-700">
-                  Correct: {gameHistory.filter(r => r.playerCorrect).length}/{gameHistory.length}
+                  Correct: {gameHistory.filter((r) => r.playerCorrect).length}/
+                  {gameHistory.length}
                 </p>
                 <p className="text-sm text-blue-700">
-                  Accuracy: {Math.round((gameHistory.filter(r => r.playerCorrect).length / gameHistory.length) * 100)}%
+                  Accuracy:{" "}
+                  {Math.round(
+                    (gameHistory.filter((r) => r.playerCorrect).length /
+                      gameHistory.length) *
+                      100
+                  )}
+                  %
                 </p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-gray-800">Opponent Performance</h3>
+                <h3 className="font-bold text-gray-800">
+                  Opponent Performance
+                </h3>
                 <p className="text-sm text-gray-700">
-                  Correct: {gameHistory.filter(r => r.opponentCorrect).length}/{gameHistory.length}
+                  Correct: {gameHistory.filter((r) => r.opponentCorrect).length}
+                  /{gameHistory.length}
                 </p>
                 <p className="text-sm text-gray-700">
-                  Accuracy: {Math.round((gameHistory.filter(r => r.opponentCorrect).length / gameHistory.length) * 100)}%
+                  Accuracy:{" "}
+                  {Math.round(
+                    (gameHistory.filter((r) => r.opponentCorrect).length /
+                      gameHistory.length) *
+                      100
+                  )}
+                  %
                 </p>
               </div>
             </div>
@@ -546,29 +573,49 @@ export default function GamePage() {
               {gameHistory.map((round, index) => (
                 <div key={index} className="bg-gray-50 p-3 rounded-lg border">
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-semibold text-gray-800">Round {round.roundNumber}</h4>
-                    <span className="text-sm font-bold text-green-600">✅ {round.correctAnswer}</span>
+                    <h4 className="font-semibold text-gray-800">
+                      Round {round.roundNumber}
+                    </h4>
+                    <span className="text-sm font-bold text-green-600">
+                      ✅ {round.correctAnswer}
+                    </span>
                   </div>
-                  
+
                   {round.culturalData && (
                     <p className="text-xs text-blue-600 mb-2 italic">
-                      {round.culturalData.cultural_category}: {round.culturalData.cultural_context}
+                      {round.culturalData.cultural_category}:{" "}
+                      {round.culturalData.cultural_context}
                     </p>
                   )}
-                  
+
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className={`p-2 rounded ${round.playerCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      <strong>You:</strong> {round.playerAnswer} {round.playerCorrect ? '✅' : '❌'}
+                    <div
+                      className={`p-2 rounded ${
+                        round.playerCorrect
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      <strong>You:</strong> {round.playerAnswer}{" "}
+                      {round.playerCorrect ? "✅" : "❌"}
                     </div>
-                    <div className={`p-2 rounded ${round.opponentCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      <strong>Opponent:</strong> {round.opponentAnswer} {round.opponentCorrect ? '✅' : '❌'}
+                    <div
+                      className={`p-2 rounded ${
+                        round.opponentCorrect
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      <strong>Opponent:</strong> {round.opponentAnswer}{" "}
+                      {round.opponentCorrect ? "✅" : "❌"}
                     </div>
                   </div>
-                  
+
                   {round.culturalData?.cultural_fun_fact && (
                     <div className="mt-2 p-2 bg-yellow-50 border-l-4 border-yellow-400">
                       <p className="text-xs text-yellow-800">
-                        💡 <strong>Fun Fact:</strong> {round.culturalData.cultural_fun_fact}
+                        💡 <strong>Fun Fact:</strong>{" "}
+                        {round.culturalData.cultural_fun_fact}
                       </p>
                     </div>
                   )}
@@ -578,16 +625,36 @@ export default function GamePage() {
 
             {/* Cultural Learning Summary */}
             <div className="mt-6 bg-purple-50 p-4 rounded-lg">
-              <h3 className="font-bold text-purple-800 mb-2">🎨 Cultural Journey</h3>
+              <h3 className="font-bold text-purple-800 mb-2">
+                🎨 Cultural Journey
+              </h3>
               <p className="text-sm text-purple-700 mb-2">
-                You explored <strong>{new Set(gameHistory.map(r => r.correctAnswer)).size}</strong> different Indonesian provinces
+                You explored{" "}
+                <strong>
+                  {new Set(gameHistory.map((r) => r.correctAnswer)).size}
+                </strong>{" "}
+                different Indonesian provinces
               </p>
               <p className="text-sm text-purple-700">
-                Cultural categories discovered: <strong>{new Set(gameHistory.map(r => r.culturalData?.cultural_category).filter(Boolean)).size}</strong>
+                Cultural categories discovered:{" "}
+                <strong>
+                  {
+                    new Set(
+                      gameHistory
+                        .map((r) => r.culturalData?.cultural_category)
+                        .filter(Boolean)
+                    ).size
+                  }
+                </strong>
               </p>
               <div className="mt-2 flex flex-wrap gap-1">
-                {Array.from(new Set(gameHistory.map(r => r.correctAnswer))).map((province, idx) => (
-                  <span key={idx} className="px-2 py-1 bg-purple-200 text-purple-800 text-xs rounded">
+                {Array.from(
+                  new Set(gameHistory.map((r) => r.correctAnswer))
+                ).map((province, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-1 bg-purple-200 text-purple-800 text-xs rounded"
+                  >
                     {province}
                   </span>
                 ))}
@@ -595,7 +662,7 @@ export default function GamePage() {
             </div>
 
             <div className="text-center mt-4">
-              <button 
+              <button
                 onClick={() => navigate("/")}
                 className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
@@ -654,42 +721,77 @@ export default function GamePage() {
             <div className="text-center mb-6">
               <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded-lg">
                 <h3 className="font-bold text-lg mb-2">🎯 Results</h3>
-                
+
                 {/* Correct Answer with Cultural Information */}
                 <div className="bg-blue-50 border border-blue-200 p-4 mb-4 rounded-lg">
-                  <h4 className="font-bold text-blue-800 mb-2">✅ Correct Answer: {correctAnswer}</h4>
+                  <h4 className="font-bold text-blue-800 mb-2">
+                    ✅ Correct Answer: {correctAnswer}
+                  </h4>
                   {currentCulturalData && (
                     <div className="text-left">
                       <p className="text-sm text-blue-700 mb-1">
-                        <strong>Cultural Element:</strong> {currentCulturalData.cultural_context}
+                        <strong>Cultural Element:</strong>{" "}
+                        {currentCulturalData.cultural_context}
                       </p>
                       <p className="text-sm text-blue-700 mb-1">
-                        <strong>Category:</strong> {currentCulturalData.cultural_category}
+                        <strong>Category:</strong>{" "}
+                        {currentCulturalData.cultural_category}
                       </p>
                       <p className="text-sm text-blue-600 italic">
-                        "{currentCulturalData.cultural_fun_fact || currentCulturalData.query}"
+                        "
+                        {currentCulturalData.cultural_fun_fact ||
+                          currentCulturalData.query}
+                        "
                       </p>
                     </div>
                   )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className={`p-3 rounded transition-all ${selectedProvince?.name === correctAnswer ? 'bg-green-100 border-2 border-green-300' : 'bg-red-100 border-2 border-red-300'}`}>
+                  <div
+                    className={`p-3 rounded transition-all ${
+                      selectedProvince?.name === correctAnswer
+                        ? "bg-green-100 border-2 border-green-300"
+                        : "bg-red-100 border-2 border-red-300"
+                    }`}
+                  >
                     <p className="font-medium">Your Answer:</p>
                     <p className="text-lg font-bold">
                       {selectedProvince?.name || "No selection"}
                     </p>
-                    <p className={`text-sm font-bold ${selectedProvince?.name === correctAnswer ? 'text-green-600' : 'text-red-600'}`}>
-                      {selectedProvince?.name === correctAnswer ? "✅ Correct!" : "❌ Wrong"}
+                    <p
+                      className={`text-sm font-bold ${
+                        selectedProvince?.name === correctAnswer
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {selectedProvince?.name === correctAnswer
+                        ? "✅ Correct!"
+                        : "❌ Wrong"}
                     </p>
                   </div>
-                  <div className={`p-3 rounded transition-all ${opponentProvince?.name === correctAnswer ? 'bg-green-100 border-2 border-green-300' : 'bg-red-100 border-2 border-red-300'}`}>
+                  <div
+                    className={`p-3 rounded transition-all ${
+                      opponentProvince?.name === correctAnswer
+                        ? "bg-green-100 border-2 border-green-300"
+                        : "bg-red-100 border-2 border-red-300"
+                    }`}
+                  >
                     <p className="font-medium">Opponent's Answer:</p>
                     <p className="text-lg font-bold text-blue-800">
                       {opponentProvince?.name || "No selection"}
                     </p>
-                    <p className={`text-sm font-bold ${opponentProvince?.name === correctAnswer ? 'text-green-600' : 'text-red-600'}`}>
-                      {opponentProvince?.name === correctAnswer ? "✅ Correct!" : "❌ Wrong"}
+                    <p
+                      className={`text-sm font-bold ${
+                        opponentProvince?.name === correctAnswer
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {opponentProvince?.name === correctAnswer
+                        ? "✅ Correct!"
+                        : "❌ Wrong"}
                     </p>
                   </div>
                 </div>
