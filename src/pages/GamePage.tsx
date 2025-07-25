@@ -150,19 +150,19 @@ export default function GamePage() {
       }
     };
 
-    const handleGameStarted = ({ roomId }) => {
+    const handleGameStarted = ({ roomId }: any) => {
       console.log("Game started in room:", roomId);
       setGameStarted(true);
       setShowReadyModal(false);
     };
 
-    const handleReadyStateUpdate = ({ readyPlayers, totalPlayers }) => {
+    const handleReadyStateUpdate = ({ readyPlayers, totalPlayers }: any) => {
       console.log("Ready state update:", { readyPlayers, totalPlayers });
       setReadyPlayers(readyPlayers);
       setTotalPlayers(totalPlayers);
     };
 
-    const handleRoomData = (roomData) => {
+    const handleRoomData = (roomData: any) => {
       console.log("Room data received:", roomData);
       setTotalPlayers(roomData.playerCount);
     };
