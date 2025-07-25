@@ -5,7 +5,6 @@ import type { Feature as GeoJSONFeature } from "geojson";
 import geoData from "../data/38ProvinsiIndonesia-Provinsi.json";
 
 import { provinceInfo, kodeToId } from "../data/provinceInfo";
-import CulturalDataDisplay from "@/components/CulturalDataDisplay";
 import CulturalDataDisplayVersusAi from "@/components/CulturalDataDisplayVersusAi";
 
 export default function VersusAiPage() {
@@ -31,6 +30,8 @@ export default function VersusAiPage() {
     result: string;
   } | null>(null);
 
+  const [culturalData, setCulturalData] = useState<any>();
+
   // Styles
   const getDefaultStyle = (): L.PathOptions => ({
     fillColor: "#3388ff",
@@ -47,6 +48,10 @@ export default function VersusAiPage() {
     color: "#7f8c8d",
     fillOpacity: 0.3,
   });
+
+  const handleCulturalDataUpate = (culturalData: any) => {
+    setCulturalData(culturalData);
+  };
 
   const fetchAi = async (input_url: string, actual_province: string) => {
     try {
@@ -131,7 +136,10 @@ export default function VersusAiPage() {
     // Data untuk testing - nanti bisa diganti dengan data dinamis
     const correctAnswer = "Aceh"; // Jawaban yang benar
     const imageUrl =
-      "https://www.womensobsession.com/uploads/post_article/20190819150605-a712c.jpg";
+      "https://upload.wikimedia.org/wikipedia/commons/9/94/Kebaya_None_Betawi_20240622_121321.jpg"; // URL gambar provinsi
+
+    console.log(correctAnswer);
+    console.log(imageUrl);
 
     try {
       // Fetch AI guess
@@ -848,7 +856,9 @@ export default function VersusAiPage() {
           >
             {isSubmitted ? "Submitted ✓" : "Submit Answer"}
           </button>
-          <CulturalDataDisplayVersusAi />
+          <CulturalDataDisplayVersusAi
+            onCulturalDataUpdate={handleCulturalDataUpate}
+          />
         </div>
       </div>
     </div>

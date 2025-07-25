@@ -13,13 +13,13 @@ const getYouTubeVideoId = (url: string): string => {
 interface CulturalDataDisplayProps {
   onStart?: () => void;
   onComplete?: () => void;
-  onAnswer?: (answer: boolean) => void;
-  province?: string; // Optional province filter
+  onCulturalDataUpdate?: (culturalData: any) => void;
 }
 
 export default function CulturalDataDisplayVersusAi({
   onStart,
   onComplete,
+  onCulturalDataUpdate,
   
 }: CulturalDataDisplayProps) {
   const { data, error, connect } = useSSE("/api/stream-data-questions");
@@ -80,6 +80,7 @@ export default function CulturalDataDisplayVersusAi({
       }, 1000);
     } else if (displayState.displayState === "displaying") {
       // 30-second display timer
+      onCulturalDataUpdate?.(data[displayState.currentIndex]);
       interval = setInterval(() => {
         setDisplayState((prev) => {
           if (prev.timeRemaining <= 1) {
