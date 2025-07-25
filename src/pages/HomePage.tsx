@@ -144,8 +144,15 @@ export default function HomePage() {
             Learn Indonesian Culture while having Fun
           </p>
 
-          {/* Create & Join Room Side by Side */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-xl mb-4">
+            {/* Create & Join Room Side by Side */}
+            <div className="flex flex-row items-center justify-center gap-6 w-full max-w-xl mb-4">
+            <button
+              onClick={handleVersusAi}
+              className="flex-1 px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-xl text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+            >
+              Versus AI
+            </button>
+
             {/* Create Room */}
             <button
               onClick={handleCreateRoom}
@@ -153,15 +160,9 @@ export default function HomePage() {
             >
               Create Room
             </button>
-
-            <button
-              onClick={handleVersusAi}
-              className="flex-1 px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-xl text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 mb-3 md:mb-0"
-            >
-              Versus AI
-            </button>
-
-            {/* Join Room */}
+            </div>
+            
+            {/* Join Room Form Below */}
             <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -214,7 +215,6 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-        </div>
         </div>
 
         {/* Curved White Transition */}
