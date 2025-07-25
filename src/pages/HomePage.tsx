@@ -30,6 +30,11 @@ export default function HomePage() {
     fetchUser();
   }, []);
 
+  const handleVersusAi = async () => {
+    const roomId = crypto.randomUUID();
+    navigate(`/room/${roomId}`);
+  };
+
   const handleCreateRoom = () => {
     if (!isLoggedIn) {
       navigate("/login");
@@ -111,7 +116,7 @@ export default function HomePage() {
   return (
     <div className="w-full min-h-screen">
       {/* Hero Section */}
-      <section className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-white via-rose-200 to-rose-500">
+      <section className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-white via-rose-200 to-rose-500 my-[-2rem]">
         {/* Background Elements */}
         <div className="absolute inset-0 w-full h-full">
           {/* Clouds Background */}
@@ -139,41 +144,48 @@ export default function HomePage() {
             Learn Indonesian Culture while having Fun
           </p>
 
-          {/* Create & Join Room Side by Side */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-xl mb-4">
+            {/* Create & Join Room Side by Side */}
+            <div className="flex flex-row items-center justify-center gap-6 w-full max-w-xl mb-4">
+            <button
+              onClick={handleVersusAi}
+              className="flex-1 px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-xl text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+            >
+              Versus AI
+            </button>
+
             {/* Create Room */}
             <button
               onClick={handleCreateRoom}
-              className="flex-1 px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-xl text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 mb-3 md:mb-0"
+              className="flex-1 px-8 py-4 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 hover:from-rose-500 hover:via-rose-600 hover:to-pink-600 text-white font-bold rounded-xl text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
             >
               Create Room
             </button>
-
-            {/* Join Room */}
+            </div>
+            
+            {/* Join Room Form Below */}
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleJoinRoom();
-              }}
-              className="flex flex-1 items-center bg-white rounded-xl shadow-md px-2 py-1 gap-2 border border-gray-200"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleJoinRoom();
+            }}
+            className="flex items-center bg-white rounded-xl shadow-md px-2 py-1 gap-2 border border-gray-200 w-full max-w-xl mx-auto"
             >
-              <input
-                type="text"
-                placeholder="Enter Room Code"
-                value={roomCode}
-                onChange={(e) => setRoomCode(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-lg text-lg focus:outline-none"
-                maxLength={8}
-                autoComplete="off"
-              />
-              <button
-                type="submit"
-                className="px-6 py-3 bg-rose-400 hover:bg-rose-500 text-white font-bold rounded-lg text-lg shadow transition-all duration-200"
-              >
-                Join
-              </button>
+            <input
+              type="text"
+              placeholder="Enter Room Code"
+              value={roomCode}
+              onChange={(e) => setRoomCode(e.target.value)}
+              className="flex-1 px-4 py-3 rounded-lg text-lg focus:outline-none"
+              maxLength={8}
+              autoComplete="off"
+            />
+            <button
+              type="submit"
+              className="px-6 py-3 bg-rose-400 hover:bg-rose-500 text-white font-bold rounded-lg text-lg shadow transition-all duration-200"
+            >
+              Join
+            </button>
             </form>
-          </div>
         </div>
 
         {/* Illustration Area */}

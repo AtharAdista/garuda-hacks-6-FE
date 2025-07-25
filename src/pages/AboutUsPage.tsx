@@ -1,33 +1,31 @@
-import React from "react";
-
 const teamMembers = [
   {
-    name: "Person One",
-    role: "Frontend Developer",
+    name: "Ilham Ghani Adrin Sapta",
+    role: "Developer",
     instagram: "https://instagram.com/placeholder1",
     linkedin: "https://linkedin.com/in/placeholder1",
     avatar:
       "https://ui-avatars.com/api/?name=Person+One&background=E11D48&color=fff",
   },
   {
-    name: "Person Two",
-    role: "Backend Developer",
+    name: "Shaquille Athar Adista",
+    role: "Developer",
     instagram: "https://instagram.com/placeholder2",
     linkedin: "https://linkedin.com/in/placeholder2",
     avatar:
       "https://ui-avatars.com/api/?name=Person+Two&background=E11D48&color=fff",
   },
   {
-    name: "Person Three",
-    role: "UI/UX Designer",
+    name: "Febrian Irvansyah",
+    role: "Developer",
     instagram: "https://instagram.com/placeholder3",
     linkedin: "https://linkedin.com/in/placeholder3",
     avatar:
       "https://ui-avatars.com/api/?name=Person+Three&background=E11D48&color=fff",
   },
   {
-    name: "Person Four",
-    role: "Fullstack Developer",
+    name: "Tengku Laras Malahayati",
+    role: "Developer",
     instagram: "https://instagram.com/placeholder4",
     linkedin: "https://linkedin.com/in/placeholder4",
     avatar:
