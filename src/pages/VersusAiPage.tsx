@@ -137,8 +137,8 @@ export default function VersusAiPage() {
     const correctAnswer = culturalData.province; // Jawaban yang benar
     const imageUrl = culturalData.media_url; // URL gambar provinsi
 
-    console.log(correctAnswer)
-    console.log(imageUrl)
+    console.log(correctAnswer);
+    console.log(imageUrl);
 
     try {
       // Fetch AI guess
@@ -726,121 +726,7 @@ export default function VersusAiPage() {
 
         <div className="relative">
           <div className="bg-white/90 rounded-2xl shadow-2xl overflow-hidden border border-rose-100">
-            <div ref={mapRef} className="h-[70vh] w-full relative" />
-            {/* Info Panel */}
-            <div className="absolute top-4 right-4 bg-white/90 p-5 rounded-xl shadow-xl border border-rose-100 z-[1000] min-w-[250px] max-w-[300px]">
-              <h3 className="text-lg font-bold text-rose-600 mb-3">
-                Province Information
-              </h3>
-              {!selectedProvince ? (
-                <p className="text-gray-600">
-                  Click on any province to see details
-                </p>
-              ) : (
-                <div className="space-y-2">
-                  <div>
-                    <span className="font-medium text-gray-700">Province:</span>
-                    <span className="ml-2 text-gray-900 font-bold">
-                      {selectedProvince.name}
-                    </span>
-                    {isSubmitted && (
-                      <span className="ml-2 text-green-600 font-bold">🔒</span>
-                    )}
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">Capital:</span>
-                    <span className="ml-2 text-gray-900">
-                      {selectedProvince.capital || "-"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">
-                      Population:
-                    </span>
-                    <span className="ml-2 text-gray-900">
-                      {selectedProvince.population || "-"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">Area:</span>
-                    <span className="ml-2 text-gray-900">
-                      {selectedProvince.area || "-"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">Kode:</span>
-                    <span className="ml-2 text-gray-900">
-                      {selectedProvince.KODE_PROV ||
-                        selectedProvince.kode ||
-                        "-"}
-                    </span>
-                  </div>
-                  {/* Tampilkan properti lain dari GeoJSON jika ada */}
-                  {Object.entries(selectedProvince)
-                    .filter(
-                      ([k]) =>
-                        ![
-                          "name",
-                          "capital",
-                          "population",
-                          "area",
-                          "kode",
-                          "KODE_PROV",
-                        ].includes(k)
-                    )
-                    .map(([k, v]) => (
-                      <div key={k}>
-                        <span className="font-medium text-gray-700">{k}:</span>
-                        <span className="ml-2 text-gray-900">{String(v)}</span>
-                      </div>
-                    ))}
-                </div>
-              )}
-            </div>
-            {/* Legend */}
-            <div className="absolute bottom-4 left-4 bg-white/90 p-4 rounded-xl shadow-lg border border-rose-100 z-[1000]">
-              <h4 className="font-semibold text-rose-600 mb-3">Legend</h4>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#3388ff" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Default Province
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#ff7800" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Hovered Province
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#e74c3c" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Selected Province
-                  </span>
-                </div>
-                {isSubmitted && (
-                  <div className="flex items-center">
-                    <div
-                      className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                      style={{ backgroundColor: "#95a5a6" }}
-                    ></div>
-                    <span className="text-sm text-gray-700 font-semibold">
-                      Locked Province
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
+            <div ref={mapRef} className="h-[70vh] w-full relative z-100" />
           </div>
         </div>
         <div className="lg:col-span-1">

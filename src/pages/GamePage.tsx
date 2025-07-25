@@ -672,134 +672,134 @@ export default function GamePage() {
           </div>
         )}
 
-        <div className="relative">
-          {/* Submit Button */}
-          {!hasSubmitted && selectedProvince && (
-            <div className="text-center mb-6">
-              <button
-                className="px-8 py-4 bg-rose-600 text-white rounded-lg shadow-lg hover:bg-rose-700 transition-all transform hover:scale-105 font-bold text-lg"
-                onClick={handleSubmit}
-                disabled={hasSubmitted}
-              >
-                Submit My Province
-              </button>
-            </div>
-          )}
+        {/* Submit Button */}
+        {!hasSubmitted && selectedProvince && (
+          <div className="text-center mb-6">
+            <button
+              className="px-8 py-4 bg-rose-600 text-white rounded-lg shadow-lg hover:bg-rose-700 transition-all transform hover:scale-105 font-bold text-lg"
+              onClick={handleSubmit}
+              disabled={hasSubmitted}
+            >
+              Submit My Province
+            </button>
+          </div>
+        )}
 
-          {/* Status Messages */}
-          {hasSubmitted && !showResults && (
-            <div className="text-center mb-6">
-              {!bothSubmitted ? (
-                <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg">
-                  <p className="font-medium">
-                    ✅ You submitted: <strong>{selectedProvince?.name}</strong>
+        {/* Status Messages */}
+        {hasSubmitted && !showResults && (
+          <div className="text-center mb-6">
+            {!bothSubmitted ? (
+              <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg">
+                <p className="font-medium">
+                  ✅ You submitted: <strong>{selectedProvince?.name}</strong>
+                </p>
+                {!opponentHasSubmitted && (
+                  <p className="text-sm mt-1">
+                    Waiting for opponent to submit...
                   </p>
-                  {!opponentHasSubmitted && (
-                    <p className="text-sm mt-1">
-                      Waiting for opponent to submit...
-                    </p>
-                  )}
-                  {opponentHasSubmitted && !bothSubmitted && (
-                    <p className="text-sm mt-1">
-                      Opponent has submitted! Processing results...
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div className="bg-blue-100 border border-blue-400 text-blue-800 px-4 py-3 rounded-lg">
-                  <p className="font-medium text-lg">
-                    🎯 {bothSubmittedMessage}
+                )}
+                {opponentHasSubmitted && !bothSubmitted && (
+                  <p className="text-sm mt-1">
+                    Opponent has submitted! Processing results...
                   </p>
-                  <p className="text-sm mt-1">Preparing to show results...</p>
-                </div>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            ) : (
+              <div className="bg-blue-100 border border-blue-400 text-blue-800 px-4 py-3 rounded-lg">
+                <p className="font-medium text-lg">🎯 {bothSubmittedMessage}</p>
+                <p className="text-sm mt-1">Preparing to show results...</p>
+              </div>
+            )}
+          </div>
+        )}
 
-          {/* Results */}
-          {showResults && (
-            <div className="text-center mb-6">
-              <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded-lg">
-                <h3 className="font-bold text-lg mb-2">🎯 Results</h3>
+        {/* Results */}
+        {showResults && (
+          <div className="text-center mb-6">
+            <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded-lg">
+              <h3 className="font-bold text-lg mb-2">🎯 Results</h3>
 
-                {/* Correct Answer with Cultural Information */}
-                <div className="bg-blue-50 border border-blue-200 p-4 mb-4 rounded-lg">
-                  <h4 className="font-bold text-blue-800 mb-2">
-                    ✅ Correct Answer: {correctAnswer}
-                  </h4>
-                  {currentCulturalData && (
-                    <div className="text-left">
-                      <p className="text-sm text-blue-700 mb-1">
-                        <strong>Cultural Element:</strong>{" "}
-                        {currentCulturalData.cultural_context}
-                      </p>
-                      <p className="text-sm text-blue-700 mb-1">
-                        <strong>Category:</strong>{" "}
-                        {currentCulturalData.cultural_category}
-                      </p>
-                      <p className="text-sm text-blue-600 italic">
-                        "
-                        {currentCulturalData.cultural_fun_fact ||
-                          currentCulturalData.query}
-                        "
-                      </p>
-                    </div>
-                  )}
-                </div>
+              {/* Correct Answer with Cultural Information */}
+              <div className="bg-blue-50 border border-blue-200 p-4 mb-4 rounded-lg">
+                <h4 className="font-bold text-blue-800 mb-2">
+                  ✅ Correct Answer: {correctAnswer}
+                </h4>
+                {currentCulturalData && (
+                  <div className="text-left">
+                    <p className="text-sm text-blue-700 mb-1">
+                      <strong>Cultural Element:</strong>{" "}
+                      {currentCulturalData.cultural_context}
+                    </p>
+                    <p className="text-sm text-blue-700 mb-1">
+                      <strong>Category:</strong>{" "}
+                      {currentCulturalData.cultural_category}
+                    </p>
+                    <p className="text-sm text-blue-600 italic">
+                      "
+                      {currentCulturalData.cultural_fun_fact ||
+                        currentCulturalData.query}
+                      "
+                    </p>
+                  </div>
+                )}
+              </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div
-                    className={`p-3 rounded transition-all ${
+              <div className="grid grid-cols-2 gap-4">
+                <div
+                  className={`p-3 rounded transition-all ${
+                    selectedProvince?.name === correctAnswer
+                      ? "bg-green-100 border-2 border-green-300"
+                      : "bg-red-100 border-2 border-red-300"
+                  }`}
+                >
+                  <p className="font-medium">Your Answer:</p>
+                  <p className="text-lg font-bold">
+                    {selectedProvince?.name || "No selection"}
+                  </p>
+                  <p
+                    className={`text-sm font-bold ${
                       selectedProvince?.name === correctAnswer
-                        ? "bg-green-100 border-2 border-green-300"
-                        : "bg-red-100 border-2 border-red-300"
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
-                    <p className="font-medium">Your Answer:</p>
-                    <p className="text-lg font-bold">
-                      {selectedProvince?.name || "No selection"}
-                    </p>
-                    <p
-                      className={`text-sm font-bold ${
-                        selectedProvince?.name === correctAnswer
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {selectedProvince?.name === correctAnswer
-                        ? "✅ Correct!"
-                        : "❌ Wrong"}
-                    </p>
-                  </div>
-                  <div
-                    className={`p-3 rounded transition-all ${
+                    {selectedProvince?.name === correctAnswer
+                      ? "✅ Correct!"
+                      : "❌ Wrong"}
+                  </p>
+                </div>
+                <div
+                  className={`p-3 rounded transition-all ${
+                    opponentProvince?.name === correctAnswer
+                      ? "bg-green-100 border-2 border-green-300"
+                      : "bg-red-100 border-2 border-red-300"
+                  }`}
+                >
+                  <p className="font-medium">Opponent's Answer:</p>
+                  <p className="text-lg font-bold text-blue-800">
+                    {opponentProvince?.name || "No selection"}
+                  </p>
+                  <p
+                    className={`text-sm font-bold ${
                       opponentProvince?.name === correctAnswer
-                        ? "bg-green-100 border-2 border-green-300"
-                        : "bg-red-100 border-2 border-red-300"
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
-                    <p className="font-medium">Opponent's Answer:</p>
-                    <p className="text-lg font-bold text-blue-800">
-                      {opponentProvince?.name || "No selection"}
-                    </p>
-                    <p
-                      className={`text-sm font-bold ${
-                        opponentProvince?.name === correctAnswer
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {opponentProvince?.name === correctAnswer
-                        ? "✅ Correct!"
-                        : "❌ Wrong"}
-                    </p>
-                  </div>
+                    {opponentProvince?.name === correctAnswer
+                      ? "✅ Correct!"
+                      : "❌ Wrong"}
+                  </p>
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          <div className="bg-white/90 rounded-2xl shadow-2xl overflow-hidden border border-rose-100">
+        {/* Main Game Content - Map and Cultural Experience Side by Side */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Map Section */}
+          <div className="bg-white/90 rounded-2xl shadow-2xl overflow-hidden border border-rose-100 relative">
             <div ref={mapRef} className="h-[70vh] w-full relative" />
 
             {/* Info Panel */}
@@ -885,10 +885,7 @@ export default function GamePage() {
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Cultural Data Display Section */}
-        <div className="lg:col-span-1">
           <CulturalDataDisplay
             socket={socketRef.current}
             roomId={currentRoomId}
