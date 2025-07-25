@@ -20,7 +20,6 @@ export default function CulturalDataDisplayVersusAi({
   onStart,
   onComplete,
   onCulturalDataUpdate,
-  
 }: CulturalDataDisplayProps) {
   const { data, error, connect } = useSSE("/api/stream-data-questions");
 
@@ -167,7 +166,7 @@ export default function CulturalDataDisplayVersusAi({
             <img
               src={currentItem.media_url}
               alt={currentItem.cultural_context}
-              className="w-full h-48 object-cover rounded-lg shadow-lg"
+              className="w-full h-96 object-cover rounded-lg shadow-lg"
               loading="lazy"
               onError={(e) => {
                 console.error("Image failed to load:", currentItem.media_url);

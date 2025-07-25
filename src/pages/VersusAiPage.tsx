@@ -647,102 +647,26 @@ export default function VersusAiPage() {
           </div>
         )}
 
-        {/* Display Selected Province */}
-        {selectedProvince && (
-          <div className="max-w-2xl mx-auto mb-6">
-            <div className="bg-white rounded-xl shadow-lg border border-rose-200 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  Your Selection
-                </h2>
-                {isSubmitted && (
-                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
-                    ✓ Submitted
-                  </span>
-                )}
-              </div>
-
-              <div className="bg-gradient-to-r from-rose-50 to-pink-50 rounded-lg p-4 border border-rose-100">
-                <div className="flex items-center mb-3">
-                  <div className="w-4 h-4 bg-red-500 rounded mr-3"></div>
-                  <h3 className="text-xl font-bold text-gray-900">
-                    {selectedProvince.name}
-                    {isSubmitted && (
-                      <span className="ml-2 text-green-600">🔒</span>
-                    )}
-                  </h3>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-600">
-                        Capital:
-                      </span>
-                      <span className="text-gray-900 font-semibold">
-                        {selectedProvince.capital || "N/A"}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-600">
-                        Province Code:
-                      </span>
-                      <span className="text-gray-900 font-semibold">
-                        {selectedProvince.KODE_PROV ||
-                          selectedProvince.kode ||
-                          "N/A"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-600">
-                        Population:
-                      </span>
-                      <span className="text-gray-900 font-semibold">
-                        {selectedProvince.population || "N/A"}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-600">Area:</span>
-                      <span className="text-gray-900 font-semibold">
-                        {selectedProvince.area || "N/A"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {!isSubmitted && !gameOver && (
-                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-blue-800 text-sm">
-                      💡 <strong>Tip:</strong> Make sure this is your final
-                      choice before submitting!
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
+        {/* Submit Button */}
+        {!isSubmitted && selectedProvince && !gameOver && (
+          <div className="text-center mb-6">
+            <button
+              className="px-8 py-4 bg-rose-600 text-white rounded-lg shadow-lg hover:bg-rose-700 transition-all transform hover:scale-105 font-bold text-lg"
+              onClick={handleSubmit}
+              disabled={isSubmitted}
+            >
+              Submit My Province
+            </button>
           </div>
         )}
 
-        <div className="relative">
-          <div className="bg-white/90 rounded-2xl shadow-2xl overflow-hidden border border-rose-100">
-            <div ref={mapRef} className="h-[70vh] w-full relative z-100" />
+        {/* Main Game Content - Map and Cultural Experience Side by Side */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Map Section */}
+          <div className="bg-white/90 rounded-2xl shadow-2xl overflow-hidden border border-rose-100 relative">
+            <div ref={mapRef} className="h-[70vh] w-full relative" />            
           </div>
-        </div>
-        <div className="lg:col-span-1">
-          <button
-            onClick={handleSubmit}
-            disabled={!selectedProvince || isSubmitted}
-            className={`mt-4 px-4 py-2 rounded-lg shadow transition-colors ${
-              !selectedProvince || isSubmitted
-                ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            }`}
-          >
-            {isSubmitted ? "Submitted ✓" : "Submit Answer"}
-          </button>
+
           <CulturalDataDisplayVersusAi
             onCulturalDataUpdate={handleCulturalDataUpate}
           />
