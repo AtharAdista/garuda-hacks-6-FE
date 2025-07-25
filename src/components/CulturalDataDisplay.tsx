@@ -209,34 +209,68 @@ export default function CulturalDataDisplay({
           </div>
         )}
 
-        {/* Cultural Information */}
-        <div className="space-y-2">
-          <h3 className="text-xl font-bold text-rose-600">
-            {currentItem.cultural_context}
-          </h3>
-          <p className="text-lg font-semibold text-gray-800">
-            Province: {currentItem.province}
-          </p>
-          <p className="text-md text-gray-700">
-            Category: {currentItem.cultural_category}
-          </p>
-          <p className="text-sm text-gray-600">Query: {currentItem.query}</p>
-        </div>
+        {/* Cultural Information - only show during results/inter-loading phase */}
+        {displayState.displayState === "inter_loading" && (
+          <div className="space-y-3 animate-fade-in">
+            <div className="bg-gradient-to-r from-rose-50 to-pink-50 p-4 rounded-lg border-l-4 border-rose-400">
+              <h3 className="text-xl font-bold text-rose-700 mb-2">
+                ✅ Correct Answer: {currentItem.province}
+              </h3>
+              <p className="text-lg font-semibold text-gray-800 mb-1">
+                Cultural Element: {currentItem.cultural_context}
+              </p>
+              <p className="text-md text-gray-700 mb-2">
+                Category: {currentItem.cultural_category}
+              </p>
+              {currentItem.cultural_context !== currentItem.query && (
+                <p className="text-sm text-gray-600 mb-2">
+                  Search Query: {currentItem.query}
+                </p>
+              )}
+            </div>
+            {/* Fun Fact section with special styling */}
+            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+              <h4 className="text-sm font-bold text-blue-800 mb-1">💡 Did you know?</h4>
+              <p className="text-sm text-blue-700 italic">
+                Take a moment to learn about Indonesian culture!
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
 
   const renderProgressIndicator = () => {
+    const getPhaseLabel = () => {
+      switch (displayState.displayState) {
+        case "initial_loading":
+          return "Loading cultural data...";
+        case "displaying":
+          return "Guess the province! (or waiting for other player)";
+        case "inter_loading":
+          return "Learn about this culture!";
+        case "completed":
+          return "Cultural journey complete!";
+        default:
+          return "Cultural experience";
+      }
+    };
+
     return (
       <div className="flex justify-between items-center mb-4">
         <div className="text-sm font-semibold text-rose-600">
           {displayState.currentIndex >= 0
-            ? `${displayState.currentIndex + 1}/${displayState.totalItems || "?"}`
-            : `Loading... (${displayState.totalItems} items ready)`}
+            ? `Round ${displayState.currentIndex + 1}/${displayState.totalItems || "?"} - ${getPhaseLabel()}`
+            : `${getPhaseLabel()} (${displayState.totalItems} items ready)`}
         </div>
         <div className="text-sm text-gray-600">
           {displayState.timeRemaining > 0 && (
-            <>Time remaining: {displayState.timeRemaining}s</>
+            <>
+              {displayState.displayState === "inter_loading" 
+                ? `Learning time: ${displayState.timeRemaining}s` 
+                : `Time remaining: ${displayState.timeRemaining}s`}
+            </>
           )}
         </div>
       </div>
