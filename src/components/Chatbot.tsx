@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { chatbotAsk, chatbotAutoGreet } from "../features/chatbot/api";
 
-export default function Chatbot() {
+export default function Chatbot({ culturalItem }: { culturalItem?: Record<string, unknown> }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<
     { sender: "user" | "bot"; text: string }[]
@@ -9,27 +10,45 @@ export default function Chatbot() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (open) {
+      setMessages([]);
+      setLoading(true);
+      chatbotAutoGreet(culturalItem)
+        .then((greet) => setMessages([{ sender: "bot", text: greet }]))
+        .catch(() =>
+          setMessages([
+            {
+              sender: "bot",
+              text: "Hello! Is there anything you would like to ask about Indonesian culture?",
+            },
+          ])
+        )
+        .finally(() => setLoading(false));
+    }
+  }, [open, culturalItem]);
+
   const sendMessage = async () => {
     if (!input.trim()) return;
+    const newHistory = [
+      ...messages.map((m) => ({
+        role: m.sender as "user" | "bot",
+        message: m.text,
+      })),
+      { role: "user" as const, message: input },
+    ];
     setMessages((prev) => [...prev, { sender: "user", text: input }]);
     setLoading(true);
     setError(null);
-
     try {
-      // Placeholder request, ganti dengan URL dan payload sesuai kebutuhan
-      const res = await fetch("https://your-placeholder-chatbot-api.com/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+      const reply = await chatbotAsk({
+        userMessage: input,
+        culturalItem,
+        chatHistory: newHistory,
       });
-      if (!res.ok) throw new Error("Failed to fetch response");
-      const data = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: data.reply || "No response" },
-      ]);
+      setMessages((prev) => [...prev, { sender: "bot", text: reply }]);
     } catch (err) {
-      setError("Failed to get response. Please try again." + err);
+      setError("Failed to get response. Please try again, err: " + err);
     } finally {
       setLoading(false);
       setInput("");
@@ -44,7 +63,7 @@ export default function Chatbot() {
     <>
       {/* Floating Button */}
       <button
-        className="fixed z-[1200] right-8 bottom-8 bg-rose-500 text-white rounded-full shadow-lg w-16 h-16 flex items-center justify-center text-3xl hover:bg-rose-600 transition"
+        className="fixed z-12000 right-8 bottom-8 bg-rose-500 text-white rounded-full shadow-lg w-16 h-16 flex items-center justify-center text-3xl hover:bg-rose-600 transition"
         aria-label="Open Chatbot"
         onClick={() => setOpen(true)}
         style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.15)" }}
@@ -54,7 +73,7 @@ export default function Chatbot() {
 
       {/* Popup Chatbot */}
       {open && (
-        <div className="fixed inset-0 z-[1300] flex items-end justify-end pointer-events-none">
+        <div className="fixed inset-0 flex items-end justify-end pointer-events-none fixed z-12000">
           <div
             className="w-full h-full absolute"
             onClick={() => setOpen(false)}
