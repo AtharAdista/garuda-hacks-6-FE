@@ -27,3 +27,8 @@ export interface PlayerData {
   userId: string;
   health: number;
 }
+
+export interface GameOverData {
+  winner: string;
+  players: any[];
+}
