@@ -20,7 +20,12 @@ interface CulturalItem {
 
 interface CulturalDisplayState {
   currentIndex: number;
-  displayState: "initial_loading" | "displaying" | "inter_loading" | "completed" | "error";
+  displayState:
+    | "initial_loading"
+    | "displaying"
+    | "inter_loading"
+    | "completed"
+    | "error";
   timeRemaining: number;
   totalItems: number;
   currentItem: CulturalItem | null;
@@ -55,25 +60,34 @@ export default function CulturalDataDisplay({
   // WebSocket event handling
   useEffect(() => {
     if (!socket || !roomId) {
-      console.log("CulturalDataDisplay: Missing socket or roomId", { socket: !!socket, roomId });
+      console.log("CulturalDataDisplay: Missing socket or roomId", {
+        socket: !!socket,
+        roomId,
+      });
       return;
     }
 
-    console.log("CulturalDataDisplay: Setting up WebSocket listeners for room:", roomId);
+    console.log(
+      "CulturalDataDisplay: Setting up WebSocket listeners for room:",
+      roomId
+    );
     console.log("CulturalDataDisplay: Socket connected:", socket.connected);
     console.log("CulturalDataDisplay: Socket ID:", socket.id);
 
     const handleCulturalDataStateUpdate = (data: CulturalDisplayState) => {
-      console.log("CulturalDataDisplay: Cultural data state update received:", data);
+      console.log(
+        "CulturalDataDisplay: Cultural data state update received:",
+        data
+      );
       setDisplayState(data);
       setError(null); // Clear any previous errors
-      
+
       if (!isActive) {
         console.log("CulturalDataDisplay: Activating cultural display");
         setIsActive(true);
         onStart?.();
       }
-      
+
       if (data.displayState === "completed") {
         console.log("CulturalDataDisplay: Cultural display completed");
         onComplete?.();
@@ -84,24 +98,31 @@ export default function CulturalDataDisplay({
     const handleError = (errorData: any) => {
       console.error("CulturalDataDisplay: Cultural data error:", errorData);
       setError(errorData.message || "An error occurred");
-      setDisplayState(prev => ({
+      setDisplayState((prev) => ({
         ...prev,
         displayState: "error",
       }));
     };
 
     const handleConnect = () => {
-      console.log("CulturalDataDisplay: Socket connected, ready to receive cultural data");
+      console.log(
+        "CulturalDataDisplay: Socket connected, ready to receive cultural data"
+      );
     };
 
     const handleDisconnect = (reason: string) => {
       console.log("CulturalDataDisplay: Socket disconnected, reason:", reason);
       setIsActive(false);
-      
+
       // Only show error for unexpected disconnects
-      if (reason !== "io client disconnect" && reason !== "client namespace disconnect") {
-        setError("Connection lost. Cultural data will resume when reconnected.");
-        setDisplayState(prev => ({
+      if (
+        reason !== "io client disconnect" &&
+        reason !== "client namespace disconnect"
+      ) {
+        setError(
+          "Connection lost. Cultural data will resume when reconnected."
+        );
+        setDisplayState((prev) => ({
           ...prev,
           displayState: "error",
         }));
@@ -116,23 +137,31 @@ export default function CulturalDataDisplay({
 
     // Log all event listeners to verify they're set up
     console.log("CulturalDataDisplay: Event listeners registered:", {
-      culturalDataStateUpdate: !!socket.listeners("culturalDataStateUpdate").length,
+      culturalDataStateUpdate: !!socket.listeners("culturalDataStateUpdate")
+        .length,
       error: !!socket.listeners("error").length,
     });
 
     // Only request cultural state if game has already started (not during ready phase)
     const requestCulturalState = () => {
       if (gameStarted) {
-        console.log("CulturalDataDisplay: Requesting current cultural state for room:", roomId);
+        console.log(
+          "CulturalDataDisplay: Requesting current cultural state for room:",
+          roomId
+        );
         socket.emit("requestCulturalState", { roomId });
       } else {
-        console.log("CulturalDataDisplay: Game not started yet, not requesting cultural state");
+        console.log(
+          "CulturalDataDisplay: Game not started yet, not requesting cultural state"
+        );
       }
     };
 
     // Only request if game has already started (for players joining mid-game)
     if (gameStarted && socket.connected) {
-      console.log("CulturalDataDisplay: Game already started and socket connected, requesting cultural state");
+      console.log(
+        "CulturalDataDisplay: Game already started and socket connected, requesting cultural state"
+      );
       requestCulturalState();
     }
 
@@ -151,7 +180,9 @@ export default function CulturalDataDisplay({
 
     const fallbackTimer = setTimeout(() => {
       if (!isActive && gameStarted) {
-        console.log("CulturalDataDisplay: No cultural data received within 3 seconds, requesting state again");
+        console.log(
+          "CulturalDataDisplay: No cultural data received within 3 seconds, requesting state again"
+        );
         socket.emit("requestCulturalState", { roomId });
       }
     }, 3000);
@@ -230,7 +261,9 @@ export default function CulturalDataDisplay({
             </div>
             {/* Fun Fact section with special styling */}
             <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-              <h4 className="text-sm font-bold text-blue-800 mb-1">💡 Did you know?</h4>
+              <h4 className="text-sm font-bold text-blue-800 mb-1">
+                💡 Did you know?
+              </h4>
               <p className="text-sm text-blue-700 italic">
                 Take a moment to learn about Indonesian culture!
               </p>
@@ -261,14 +294,16 @@ export default function CulturalDataDisplay({
       <div className="flex justify-between items-center mb-4">
         <div className="text-sm font-semibold text-rose-600">
           {displayState.currentIndex >= 0
-            ? `Round ${displayState.currentIndex + 1}/${displayState.totalItems || "?"} - ${getPhaseLabel()}`
+            ? `Round ${displayState.currentIndex + 1}/${
+                displayState.totalItems || "?"
+              } - ${getPhaseLabel()}`
             : `${getPhaseLabel()} (${displayState.totalItems} items ready)`}
         </div>
         <div className="text-sm text-gray-600">
           {displayState.timeRemaining > 0 && (
             <>
-              {displayState.displayState === "inter_loading" 
-                ? `Learning time: ${displayState.timeRemaining}s` 
+              {displayState.displayState === "inter_loading"
+                ? `Learning time: ${displayState.timeRemaining}s`
                 : `Time remaining: ${displayState.timeRemaining}s`}
             </>
           )}
@@ -284,9 +319,7 @@ export default function CulturalDataDisplay({
         <h3 className="text-lg font-bold text-rose-600 mb-4">
           Indonesian Cultural Experience
         </h3>
-        <p className="text-gray-600 mb-4">
-          Waiting for game to start...
-        </p>
+        <p className="text-gray-600 mb-4">Waiting for game to start...</p>
         <div className="flex items-center justify-center space-x-3">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-rose-500"></div>
           <span className="text-gray-600">Ready to begin cultural journey</span>
@@ -318,7 +351,8 @@ export default function CulturalDataDisplay({
           Cultural Journey Complete!
         </h3>
         <p className="text-gray-600 mb-4">
-          You've experienced {displayState.totalItems} pieces of Indonesian culture
+          You've experienced {displayState.totalItems} pieces of Indonesian
+          culture
         </p>
         <p className="text-gray-600 text-sm">
           Continue playing or start a new game for more cultural discoveries!

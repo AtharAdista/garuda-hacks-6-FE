@@ -10,11 +10,13 @@ import Clouds1 from "../../public/Clouds_1.svg";
 import Logo3 from "../../public/Logo_3_pink.svg";
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "@/features/user/api";
+import { useAuth } from "@/features/auth/useAuth";
 
 export default function HomePage() {
   const navigate = useNavigate();
   const { socket, isConnected } = useSocket();
   const [roomCode, setRoomCode] = useState("");
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     async function fetchUser() {
@@ -29,6 +31,10 @@ export default function HomePage() {
   }, []);
 
   const handleCreateRoom = () => {
+    if (!isLoggedIn) {
+      navigate("/login");
+      return;
+    }
     if (!socket || !isConnected) return;
 
     const roomId = uuidv4().slice(0, 6);
@@ -50,7 +56,7 @@ export default function HomePage() {
       });
     };
 
-    const onError = (err: { message: any; }) => {
+    const onError = (err: { message: any }) => {
       console.log(err);
       alert(err.message);
       socket.off("roomCreated", onRoomCreated);
@@ -63,6 +69,10 @@ export default function HomePage() {
   };
 
   const handleJoinRoom = () => {
+    if (!isLoggedIn) {
+      navigate("/login");
+      return;
+    }
     if (!roomCode || !socket || !isConnected) return;
 
     const userId = localStorage.getItem("id");
@@ -84,7 +94,7 @@ export default function HomePage() {
       });
     };
 
-    const onError = (err: { message: any; }) => {
+    const onError = (err: { message: any }) => {
       console.log(err);
       alert(err.message);
       socket.off("joinedRoom", onJoinedRoom);
@@ -101,7 +111,7 @@ export default function HomePage() {
   return (
     <div className="w-full min-h-screen">
       {/* Hero Section */}
-      <section className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-white via-rose-200 to-rose-400">
+      <section className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-white via-rose-200 to-rose-500">
         {/* Background Elements */}
         <div className="absolute inset-0 w-full h-full">
           {/* Clouds Background */}
@@ -185,10 +195,10 @@ export default function HomePage() {
 
             {/* Center Characters */}
             <div className="flex items-end justify-center space-x-[-4rem] z-20 relative bottom-[6rem]">
-              <div className="w-80 h-50 rounded-lg flex flex-col items-center justify-center">
+              <div className="md:w-80 w-50 h-50 rounded-lg flex flex-col items-center justify-center">
                 <img src={People1} alt="" />
               </div>
-              <div className="w-90 h-40 rounded-lg flex flex-col items-center justify-center">
+              <div className="md:w-90 w-50 h-40 rounded-lg flex flex-col items-center justify-center">
                 <img src={People2} alt="" />
               </div>
             </div>
@@ -261,11 +271,10 @@ export default function HomePage() {
                 </svg>
               </div>
               <h4 className="text-xl font-bold text-gray-800 mb-3">
-                Live Leaderboard
+                Connecting Cultures
               </h4>
               <p className="text-gray-600 leading-relaxed">
-                Compare your score with others and see how you stack up in
-                real-time!
+                Engage with players from around the world and see how you rank
               </p>
             </div>
 
@@ -309,10 +318,12 @@ export default function HomePage() {
                 Learn Cultures
               </h4>
               <p className="text-gray-600 leading-relaxed">
-                With our AI Assistant, we help you learn more and make the
-                experience{" "}
-                <span className="font-semibold text-gray-800">pleasurable</span>
-                .
+                With our{" "}
+                <span className="font-semibold text-gray-800">
+                  AI Assistant
+                </span>
+                . , we help you learn more and make the experience{" "}
+                <span className="font-semibold text-gray-800">enjoyable</span>.
               </p>
             </div>
           </div>

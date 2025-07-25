@@ -57,17 +57,20 @@ export default function GamePage() {
   useEffect(() => {
     console.log("AAAA");
     if (gameOverData) {
-      const timeout = setTimeout(() => {
-        navigate("/"); // redirect ke halaman utama
-      }, 5000); // tunggu 5 detik sebelum redirect
+      generateMatchSummary();
 
-      return () => clearTimeout(timeout); // bersihkan timeout saat komponen unmount
     }
-  }, [gameOverData, navigate]);
+  }, []);
+
   const [gameStarted, setGameStarted] = useState(false);
   const [showReadyModal, setShowReadyModal] = useState(true);
   const [readyPlayers, setReadyPlayers] = useState<string[]>([]);
   const [totalPlayers, setTotalPlayers] = useState(0);
+
+  // Tambahkan state baru setelah line 60 (setelah state yang sudah ada):
+  const [matchSummary, setMatchSummary] = useState<string>("");
+  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
+  const [showMatchSummary, setShowMatchSummary] = useState(false);
 
   useEffect(() => {
     if (!currentRoomId || !currentPlayerId) {
@@ -388,6 +391,61 @@ export default function GamePage() {
     });
   };
 
+  const generateMatchSummary = async () => {
+    if (gameHistory.length === 0) {
+      console.log("No game history available for summary");
+      return;
+    }
+
+    setIsLoadingSummary(true);
+    try {
+      console.log("Generating match summary for game history:", gameHistory);
+
+      // Format game history untuk AI API
+      const summaryPayload = gameHistory.map((round) => ({
+        playerCorrect: round.playerCorrect,
+        playerAnswer: round.playerAnswer,
+        correctAnswer: round.correctAnswer,
+        culturalData: round.culturalData
+          ? {
+              cultural_category: round.culturalData.cultural_category,
+              cultural_context: round.culturalData.cultural_context,
+              cultural_fun_fact: round.culturalData.cultural_fun_fact,
+            }
+          : null,
+      }));
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/match-summary`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(summaryPayload),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setMatchSummary(data.feedback);
+      setShowMatchSummary(true);
+
+      console.log("Match summary generated successfully:", data.feedback);
+    } catch (error) {
+      console.error("Error generating match summary:", error);
+      setMatchSummary(
+        "Sorry, we couldn't generate your match summary at this time. Please try again later."
+      );
+      setShowMatchSummary(true);
+    } finally {
+      setIsLoadingSummary(false);
+    }
+  };
+
   const onEachFeature = (feature: GeoJSONFeature, layer: L.Layer) => {
     if (feature.properties) {
       let code: string | undefined;
@@ -490,7 +548,6 @@ export default function GamePage() {
             Explore Indonesian provinces while playing
           </p>
         </div>
-
         <div className="flex justify-center gap-10 mb-4">
           <div className="bg-white px-4 py-2 rounded-lg shadow">
             <p className="text-rose-700 font-bold">
@@ -503,25 +560,46 @@ export default function GamePage() {
             </p>
           </div>
         </div>
+        {/* AI Match Summary */}
+        {showMatchSummary && matchSummary && (
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-300 rounded-xl shadow-xl mt-6 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-green-700 flex items-center gap-2">
+                🤖 AI Match Summary
+              </h2>
+              <button
+                onClick={() => setShowMatchSummary(false)}
+                className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+              >
+                ×
+              </button>
+            </div>
 
-        {gameOverData && (
-          <div className="text-center p-6 bg-white border border-rose-300 rounded-xl shadow-xl mt-6">
-            <h2 className="text-3xl font-bold text-rose-700 mb-2">
-              🏁 Game Finish
-            </h2>
-            {gameOverData.winner ? (
-              <p className="text-xl">
-                {gameOverData.winner === currentPlayerId
-                  ? "🎉 You Win!"
-                  : "😢 You Lose!"}
-              </p>
-            ) : (
-              <p className="text-xl">🤝 It's a draw!</p>
-            )}
-            <p className="mt-2 text-gray-600">Thank you for playing!</p>
+            <div className="bg-white rounded-lg p-4 border border-green-200">
+              <div className="prose prose-sm max-w-none">
+                {matchSummary.split("\n").map((paragraph, index) => (
+                  <p key={index} className="mb-3 text-gray-700 leading-relaxed">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4 flex justify-center">
+              <button
+                onClick={generateMatchSummary}
+                disabled={isLoadingSummary}
+                className={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                  isLoadingSummary
+                    ? "bg-gray-400 text-white cursor-not-allowed"
+                    : "bg-green-600 text-white hover:bg-green-700"
+                }`}
+              >
+                {isLoadingSummary ? "Regenerating..." : "🔄 Regenerate Summary"}
+              </button>
+            </div>
           </div>
         )}
-
         {/* Game Recap */}
         {showGameRecap && gameHistory.length > 0 && (
           <div className="bg-white border border-blue-300 rounded-xl shadow-xl mt-6 p-6">
@@ -801,92 +879,8 @@ export default function GamePage() {
 
           <div className="bg-white/90 rounded-2xl shadow-2xl overflow-hidden border border-rose-100">
             <div ref={mapRef} className="h-[70vh] w-full relative" />
-
-            {/* Info Panel */}
-            <div className="absolute top-4 right-4 bg-white/90 p-5 rounded-xl shadow-xl border border-rose-100 z-[1000] min-w-[250px] max-w-[300px]">
-              <h3 className="text-lg font-bold text-rose-600 mb-3">
-                Province Information
-              </h3>
-              {!selectedProvince ? (
-                <p className="text-gray-600">
-                  Click on any province to see details
-                </p>
-              ) : (
-                <div className="space-y-2">
-                  <div>
-                    <span className="font-medium text-gray-700">Province:</span>
-                    <span className="ml-2 text-gray-900 font-bold">
-                      {selectedProvince.name}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">Capital:</span>
-                    <span className="ml-2 text-gray-900">
-                      {selectedProvince.capital || "-"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">
-                      Population:
-                    </span>
-                    <span className="ml-2 text-gray-900">
-                      {selectedProvince.population || "-"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">Area:</span>
-                    <span className="ml-2 text-gray-900">
-                      {selectedProvince.area || "-"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">Kode:</span>
-                    <span className="ml-2 text-gray-900">
-                      {selectedProvince.KODE_PROV ||
-                        selectedProvince.kode ||
-                        "-"}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Legend */}
-            <div className="absolute bottom-4 left-4 bg-white/90 p-4 rounded-xl shadow-lg border border-rose-100 z-[1000]">
-              <h4 className="font-semibold text-rose-600 mb-3">Legend</h4>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#3388ff" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Default Province
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#ff7800" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Hovered Province
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  <div
-                    className="w-5 h-5 mr-3 border border-gray-400 rounded"
-                    style={{ backgroundColor: "#e74c3c" }}
-                  ></div>
-                  <span className="text-sm text-gray-700 font-semibold">
-                    Selected Province
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
-
         {/* Cultural Data Display Section */}
         <div className="lg:col-span-1">
           <CulturalDataDisplay

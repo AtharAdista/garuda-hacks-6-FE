@@ -8,6 +8,7 @@ import RegisterForm from "@/features/auth/RegisterForm";
 import RoomPage from "@/pages/RoomPage";
 import ProfilePage from "@/pages/ProfilePage";
 import AuthSplitLayout from "@/layouts/AuthSplitLayout";
+import AboutUsPage from "@/pages/AboutUsPage";
 
 export default function AppRouter() {
   return (
@@ -20,6 +21,7 @@ export default function AppRouter() {
           <Route path="encyclopedia" element={<EncyclopediaPage />} />
           <Route path="room" element={<RoomPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="aboutus" element={<AboutUsPage />} />
         </Route>
         {/* Layout auth tanpa NavBar */}
         <Route element={<AuthSplitLayout />}>
