@@ -7,6 +7,7 @@ import CulturalDataDisplay from "@/components/CulturalDataDisplay";
 import geoData from "../data/38ProvinsiIndonesia-Provinsi.json";
 import { io, Socket } from "socket.io-client";
 import { useLocation } from "react-router-dom";
+import ReadyModal from "@/components/ReadyModal";
 
 import { provinceInfo, kodeToId } from "../data/provinceInfo";
 
@@ -43,6 +44,10 @@ export default function GamePage() {
   const [bothSubmitted, setBothSubmitted] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [bothSubmittedMessage, setBothSubmittedMessage] = useState("");
+  const [gameStarted, setGameStarted] = useState(false);
+  const [showReadyModal, setShowReadyModal] = useState(true);
+  const [readyPlayers, setReadyPlayers] = useState<string[]>([]);
+  const [totalPlayers, setTotalPlayers] = useState(0);
 
   useEffect(() => {
     if (!currentRoomId || !currentPlayerId) {
@@ -126,10 +131,30 @@ export default function GamePage() {
       }
     };
 
+    const handleGameStarted = ({ roomId }) => {
+      console.log("Game started in room:", roomId);
+      setGameStarted(true);
+      setShowReadyModal(false);
+    };
+
+    const handleReadyStateUpdate = ({ readyPlayers, totalPlayers }) => {
+      console.log("Ready state update:", { readyPlayers, totalPlayers });
+      setReadyPlayers(readyPlayers);
+      setTotalPlayers(totalPlayers);
+    };
+
+    const handleRoomData = (roomData) => {
+      console.log("Room data received:", roomData);
+      setTotalPlayers(roomData.playerCount);
+    };
+
     socket.on("provinceSelected", handleProvinceSelected);
     socket.on("opponentSubmitted", handleOpponentSubmitted);
     socket.on("bothPlayersSubmitted", handleBothPlayersSubmitted);
     socket.on("showResults", handleShowResults);
+    socket.on("gameStarted", handleGameStarted);
+    socket.on("readyStateUpdate", handleReadyStateUpdate);
+    socket.on("roomData", handleRoomData);
 
     return () => {
       socket.off("connect");
@@ -139,6 +164,9 @@ export default function GamePage() {
       socket.off("opponentSubmitted", handleOpponentSubmitted);
       socket.off("bothPlayersSubmitted", handleBothPlayersSubmitted);
       socket.off("showResults", handleShowResults);
+      socket.off("gameStarted", handleGameStarted);
+      socket.off("readyStateUpdate", handleReadyStateUpdate);
+      socket.off("roomData", handleRoomData);
 
       console.log("GamePage cleanup: disconnecting socket and leaving room");
       socket.emit("leaveRoom", {
@@ -231,6 +259,22 @@ export default function GamePage() {
     console.log("Submitted province:", selectedProvince.name);
   };
 
+  const handlePlayerReady = () => {
+    console.log("Player ready");
+    socketRef.current?.emit("playerReady", {
+      roomId: currentRoomId,
+      userId: currentPlayerId,
+    });
+  };
+
+  const handlePlayerUnready = () => {
+    console.log("Player unready");
+    socketRef.current?.emit("playerUnready", {
+      roomId: currentRoomId,
+      userId: currentPlayerId,
+    });
+  };
+
   const onEachFeature = (feature: GeoJSONFeature, layer: L.Layer) => {
     if (feature.properties) {
       let code: string | undefined;
@@ -314,6 +358,15 @@ export default function GamePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-pink-200 to-rose-200">
+      <ReadyModal
+        isOpen={showReadyModal && !gameStarted}
+        currentUserId={currentPlayerId || ""}
+        readyPlayers={readyPlayers}
+        totalPlayers={totalPlayers}
+        onReady={handlePlayerReady}
+        onUnready={handlePlayerUnready}
+      />
+      
       <div className="h-20" />
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="mb-8 text-center">
@@ -482,7 +535,11 @@ export default function GamePage() {
 
         {/* Cultural Data Display Section */}
         <div className="lg:col-span-1">
-          <CulturalDataDisplay />
+          <CulturalDataDisplay 
+            socket={socketRef.current}
+            roomId={currentRoomId}
+            gameStarted={gameStarted}
+          />
         </div>
       </div>
     </div>

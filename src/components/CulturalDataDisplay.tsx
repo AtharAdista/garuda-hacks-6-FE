@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { useSSE } from "@/hooks/useSSE";
-import type { CulturalDisplayState } from "@/interfaces/streamData";
+import { useState, useEffect } from "react";
+import type { Socket } from "socket.io-client";
 
 // Helper function to extract YouTube video ID from URL
 const getYouTubeVideoId = (url: string): string => {
@@ -10,135 +9,146 @@ const getYouTubeVideoId = (url: string): string => {
   return match ? match[1] : "";
 };
 
+interface CulturalItem {
+  province: string;
+  media_type: string;
+  media_url: string;
+  cultural_category: string;
+  query: string;
+  cultural_context: string;
+}
+
+interface CulturalDisplayState {
+  currentIndex: number;
+  displayState: "initial_loading" | "displaying" | "inter_loading" | "completed" | "error";
+  timeRemaining: number;
+  totalItems: number;
+  currentItem: CulturalItem | null;
+}
+
 interface CulturalDataDisplayProps {
+  socket: Socket | null;
+  roomId: string | null;
+  gameStarted?: boolean;
   onStart?: () => void;
   onComplete?: () => void;
 }
 
 export default function CulturalDataDisplay({
+  socket,
+  roomId,
+  gameStarted = false,
   onStart,
   onComplete,
 }: CulturalDataDisplayProps) {
-  const { data, error, connect } = useSSE("/api/stream-data-questions");
-
   const [displayState, setDisplayState] = useState<CulturalDisplayState>({
     currentIndex: -1,
-    displayState: "idle",
+    displayState: "initial_loading",
     timeRemaining: 0,
     totalItems: 0,
+    currentItem: null,
   });
 
+  const [error, setError] = useState<string | null>(null);
   const [isActive, setIsActive] = useState(false);
 
-  const startDisplay = useCallback(() => {
-    setIsActive(true);
-    setDisplayState({
-      currentIndex: -1,
-      displayState: "initial_loading",
-      timeRemaining: 10,
-      totalItems: 0,
-    });
-    onStart?.();
-    connect();
-  }, [connect, onStart]);
-
+  // WebSocket event handling
   useEffect(() => {
-    if (!isActive) return;
-
-    let interval: NodeJS.Timeout;
-
-    if (displayState.displayState === "initial_loading") {
-      // 10-second initial loading
-      interval = setInterval(() => {
-        setDisplayState((prev) => {
-          if (prev.timeRemaining <= 1) {
-            // Check if we have data to display
-            if (data.length > 0) {
-              return {
-                ...prev,
-                currentIndex: 0,
-                displayState: "displaying",
-                timeRemaining: 30,
-                totalItems: data.length,
-              };
-            } else {
-              // Still waiting for data
-              return {
-                ...prev,
-                timeRemaining: 10, // Reset loading timer
-              };
-            }
-          }
-          return {
-            ...prev,
-            timeRemaining: prev.timeRemaining - 1,
-          };
-        });
-      }, 1000);
-    } else if (displayState.displayState === "displaying") {
-      // 30-second display timer
-      interval = setInterval(() => {
-        setDisplayState((prev) => {
-          if (prev.timeRemaining <= 1) {
-            // Check if we have more items to display
-            if (prev.currentIndex + 1 < data.length) {
-              return {
-                ...prev,
-                displayState: "inter_loading",
-                timeRemaining: 5,
-              };
-            } else {
-              // All items displayed
-              setIsActive(false);
-              onComplete?.();
-              return {
-                ...prev,
-                displayState: "completed",
-                timeRemaining: 0,
-              };
-            }
-          }
-          return {
-            ...prev,
-            timeRemaining: prev.timeRemaining - 1,
-          };
-        });
-      }, 1000);
-    } else if (displayState.displayState === "inter_loading") {
-      // 5-second inter-item loading
-      interval = setInterval(() => {
-        setDisplayState((prev) => {
-          if (prev.timeRemaining <= 1) {
-            return {
-              ...prev,
-              currentIndex: prev.currentIndex + 1,
-              displayState: "displaying",
-              timeRemaining: 30,
-            };
-          }
-          return {
-            ...prev,
-            timeRemaining: prev.timeRemaining - 1,
-          };
-        });
-      }, 1000);
+    if (!socket || !roomId) {
+      console.log("CulturalDataDisplay: Missing socket or roomId", { socket: !!socket, roomId });
+      return;
     }
 
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [displayState, data.length, isActive, onComplete]);
+    console.log("CulturalDataDisplay: Setting up WebSocket listeners for room:", roomId);
+    console.log("CulturalDataDisplay: Socket connected:", socket.connected);
+    console.log("CulturalDataDisplay: Socket ID:", socket.id);
 
-  // Handle errors
-  useEffect(() => {
-    if (error && isActive) {
-      setDisplayState((prev) => ({
+    const handleCulturalDataStateUpdate = (data: CulturalDisplayState) => {
+      console.log("CulturalDataDisplay: Cultural data state update received:", data);
+      setDisplayState(data);
+      setError(null); // Clear any previous errors
+      
+      if (!isActive) {
+        console.log("CulturalDataDisplay: Activating cultural display");
+        setIsActive(true);
+        onStart?.();
+      }
+      
+      if (data.displayState === "completed") {
+        console.log("CulturalDataDisplay: Cultural display completed");
+        onComplete?.();
+        setIsActive(false);
+      }
+    };
+
+    const handleError = (errorData: any) => {
+      console.error("CulturalDataDisplay: Cultural data error:", errorData);
+      setError(errorData.message || "An error occurred");
+      setDisplayState(prev => ({
         ...prev,
         displayState: "error",
       }));
+    };
+
+    const handleConnect = () => {
+      console.log("CulturalDataDisplay: Socket connected, ready to receive cultural data");
+    };
+
+    const handleDisconnect = () => {
+      console.log("CulturalDataDisplay: Socket disconnected");
       setIsActive(false);
+    };
+
+    // Add all event listeners
+    socket.on("culturalDataStateUpdate", handleCulturalDataStateUpdate);
+    socket.on("error", handleError);
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+
+    // Log all event listeners to verify they're set up
+    console.log("CulturalDataDisplay: Event listeners registered:", {
+      culturalDataStateUpdate: !!socket.listeners("culturalDataStateUpdate").length,
+      error: !!socket.listeners("error").length,
+    });
+
+    // Only request cultural state if game has already started (not during ready phase)
+    const requestCulturalState = () => {
+      if (gameStarted) {
+        console.log("CulturalDataDisplay: Requesting current cultural state for room:", roomId);
+        socket.emit("requestCulturalState", { roomId });
+      } else {
+        console.log("CulturalDataDisplay: Game not started yet, not requesting cultural state");
+      }
+    };
+
+    // Only request if game has already started (for players joining mid-game)
+    if (gameStarted && socket.connected) {
+      console.log("CulturalDataDisplay: Game already started and socket connected, requesting cultural state");
+      requestCulturalState();
     }
-  }, [error, isActive]);
+
+    return () => {
+      console.log("CulturalDataDisplay: Cleaning up WebSocket listeners");
+      socket.off("culturalDataStateUpdate", handleCulturalDataStateUpdate);
+      socket.off("error", handleError);
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+    };
+  }, [socket, roomId, onStart, onComplete]);
+
+  // Fallback mechanism - request cultural state if not received within 3 seconds (only if game started)
+  useEffect(() => {
+    if (!socket || !roomId || isActive || !gameStarted) return;
+
+    const fallbackTimer = setTimeout(() => {
+      if (!isActive && gameStarted) {
+        console.log("CulturalDataDisplay: No cultural data received within 3 seconds, requesting state again");
+        socket.emit("requestCulturalState", { roomId });
+      }
+    }, 3000);
+
+    return () => clearTimeout(fallbackTimer);
+  }, [socket, roomId, isActive, gameStarted]);
 
   const renderLoadingSpinner = () => (
     <div className="flex items-center justify-center space-x-3">
@@ -152,7 +162,7 @@ export default function CulturalDataDisplay({
   );
 
   const renderCurrentItem = () => {
-    const currentItem = data[displayState.currentIndex];
+    const currentItem = displayState.currentItem;
     if (!currentItem) return null;
 
     return (
@@ -208,14 +218,12 @@ export default function CulturalDataDisplay({
   };
 
   const renderProgressIndicator = () => {
-    if (displayState.displayState === "idle") return null;
-
     return (
       <div className="flex justify-between items-center mb-4">
         <div className="text-sm font-semibold text-rose-600">
           {displayState.currentIndex >= 0
-            ? `${displayState.currentIndex + 1}/${data.length || "?"}`
-            : `Loading... (${data.length} items ready)`}
+            ? `${displayState.currentIndex + 1}/${displayState.totalItems || "?"}`
+            : `Loading... (${displayState.totalItems} items ready)`}
         </div>
         <div className="text-sm text-gray-600">
           {displayState.timeRemaining > 0 && (
@@ -226,21 +234,20 @@ export default function CulturalDataDisplay({
     );
   };
 
-  if (displayState.displayState === "idle") {
+  // If not active yet, show waiting state
+  if (!isActive) {
     return (
       <div className="bg-white/90 p-6 rounded-xl shadow-xl border border-rose-100">
         <h3 className="text-lg font-bold text-rose-600 mb-4">
           Indonesian Cultural Experience
         </h3>
         <p className="text-gray-600 mb-4">
-          Discover Indonesian culture through a guided visual journey
+          Waiting for game to start...
         </p>
-        <button
-          onClick={startDisplay}
-          className="w-full px-4 py-2 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 text-white rounded-lg font-bold hover:from-rose-500 hover:to-pink-600 transition-all"
-        >
-          Start Cultural Journey
-        </button>
+        <div className="flex items-center justify-center space-x-3">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-rose-500"></div>
+          <span className="text-gray-600">Ready to begin cultural journey</span>
+        </div>
       </div>
     );
   }
@@ -254,20 +261,9 @@ export default function CulturalDataDisplay({
         <p className="text-red-600 mb-4">
           {error || "Failed to load cultural data"}
         </p>
-        <button
-          onClick={() => {
-            setDisplayState({
-              currentIndex: -1,
-              displayState: "idle",
-              timeRemaining: 0,
-              totalItems: 0,
-            });
-            setIsActive(false);
-          }}
-          className="w-full px-4 py-2 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-lg font-bold hover:from-gray-500 hover:to-gray-600 transition-all"
-        >
-          Try Again
-        </button>
+        <p className="text-gray-600 text-sm">
+          Cultural content will automatically retry in the next game.
+        </p>
       </div>
     );
   }
@@ -279,22 +275,11 @@ export default function CulturalDataDisplay({
           Cultural Journey Complete!
         </h3>
         <p className="text-gray-600 mb-4">
-          You've experienced {data.length} pieces of Indonesian culture
+          You've experienced {displayState.totalItems} pieces of Indonesian culture
         </p>
-        <button
-          onClick={() => {
-            setDisplayState({
-              currentIndex: -1,
-              displayState: "idle",
-              timeRemaining: 0,
-              totalItems: 0,
-            });
-            setIsActive(false);
-          }}
-          className="w-full px-4 py-2 bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500 text-white rounded-lg font-bold hover:from-rose-500 hover:to-pink-600 transition-all"
-        >
-          Start New Journey
-        </button>
+        <p className="text-gray-600 text-sm">
+          Continue playing or start a new game for more cultural discoveries!
+        </p>
       </div>
     );
   }
