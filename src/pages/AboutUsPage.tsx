@@ -59,8 +59,8 @@ const resources = [
     icon: "📊",
   },
   {
-    name: "OpenAI",
-    url: "https://openai.com/",
+    name: "Google AI Studio",
+    url: "https://aistudio.google.com/",
     desc: "Advanced AI technology for intelligent assistance",
     icon: "🤖",
   },
@@ -87,10 +87,15 @@ const AboutUsPage = () => {
               About Team Skoopi
             </h1>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              We are a passionate team of four dedicated individuals committed to bridging the gap in 
-              <span className="text-rose-600 font-semibold"> Indonesian cultural awareness</span>. 
-              Our mission is to transform learning about Indonesia's rich heritage into an engaging, 
-              interactive, and accessible experience for everyone.
+              We are a passionate team of four dedicated individuals committed
+              to bridging the gap in
+              <span className="text-rose-600 font-semibold">
+                {" "}
+                Indonesian cultural awareness
+              </span>
+              . Our mission is to transform learning about Indonesia's rich
+              heritage into an engaging, interactive, and accessible experience
+              for everyone.
             </p>
           </div>
         </div>
@@ -99,7 +104,9 @@ const AboutUsPage = () => {
       {/* Team Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-slate-900 mb-4">Meet Our Team</h2>
+          <h2 className="text-4xl font-bold text-slate-900 mb-4">
+            Meet Our Team
+          </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-rose-500 to-rose-600 mx-auto rounded-full"></div>
         </div>
 
@@ -111,7 +118,7 @@ const AboutUsPage = () => {
             >
               {/* Gradient Background */}
               <div className="absolute inset-0 bg-gradient-to-br from-rose-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
+
               <div className="relative p-8 text-center">
                 {/* Avatar with animation */}
                 <div className="relative mb-6">
@@ -139,7 +146,11 @@ const AboutUsPage = () => {
                     className="w-10 h-10 bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl flex items-center justify-center text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
                     aria-label="Instagram"
                   >
-                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
+                    <svg
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      className="w-5 h-5"
+                    >
                       <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5zm4.25 2.25a5.25 5.25 0 1 1 0 10.5 5.25 5.25 0 0 1 0-10.5zm0 1.5a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5zm5.25 1.25a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                     </svg>
                   </a>
@@ -150,7 +161,11 @@ const AboutUsPage = () => {
                     className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
                     aria-label="LinkedIn"
                   >
-                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
+                    <svg
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      className="w-5 h-5"
+                    >
                       <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm13.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.88v1.23h.04c.4-.76 1.38-1.56 2.84-1.56 3.04 0 3.6 2 3.6 4.59v4.74z" />
                     </svg>
                   </a>
@@ -165,9 +180,12 @@ const AboutUsPage = () => {
       <div className="bg-gradient-to-br from-slate-900 to-slate-800 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Technologies & Resources</h2>
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Technologies & Resources
+            </h2>
             <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-              Powered by cutting-edge technologies and reliable resources to deliver the best experience
+              Powered by cutting-edge technologies and reliable resources to
+              deliver the best experience
             </p>
             <div className="w-24 h-1 bg-gradient-to-r from-rose-500 to-rose-600 mx-auto rounded-full mt-6"></div>
           </div>
@@ -209,7 +227,8 @@ const AboutUsPage = () => {
             Join Us in Celebrating Indonesian Culture
           </h3>
           <p className="text-rose-100 text-lg mb-8 leading-relaxed">
-            Discover the beauty and richness of Indonesia's diverse cultural heritage through our interactive platform.
+            Discover the beauty and richness of Indonesia's diverse cultural
+            heritage through our interactive platform.
           </p>
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-white font-semibold">
             <span>Made with</span>
