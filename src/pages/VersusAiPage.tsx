@@ -134,12 +134,11 @@ export default function VersusAiPage() {
     setIsAiThinking(true);
 
     // Data untuk testing - nanti bisa diganti dengan data dinamis
-    const correctAnswer = "Aceh"; // Jawaban yang benar
-    const imageUrl =
-      "https://upload.wikimedia.org/wikipedia/commons/9/94/Kebaya_None_Betawi_20240622_121321.jpg"; // URL gambar provinsi
+    const correctAnswer = culturalData.province; // Jawaban yang benar
+    const imageUrl = culturalData.media_url; // URL gambar provinsi
 
-    console.log(correctAnswer);
-    console.log(imageUrl);
+    console.log(correctAnswer)
+    console.log(imageUrl)
 
     try {
       // Fetch AI guess
