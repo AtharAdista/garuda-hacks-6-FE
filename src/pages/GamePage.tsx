@@ -3,6 +3,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Feature as GeoJSONFeature } from "geojson";
 import CulturalDataDisplay from "@/components/CulturalDataDisplay";
+import RoundResultModal from "@/components/RoundResultModal";
 
 import geoData from "../data/38ProvinsiIndonesia-Provinsi.json";
 import { io, Socket } from "socket.io-client";
@@ -52,6 +53,8 @@ export default function GamePage() {
   const [correctAnswer, setCorrectAnswer] = useState<string>("");
   const [gameHistory, setGameHistory] = useState<any[]>([]);
   const [showGameRecap, setShowGameRecap] = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [currentRound, setCurrentRound] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -213,6 +216,7 @@ export default function GamePage() {
       };
 
       setGameHistory((prev) => [...prev, roundData]);
+      setShowResultModal(true);
     };
 
     const handleGameStarted = ({ roomId }: any) => {
@@ -242,12 +246,14 @@ export default function GamePage() {
       if (opponent) setOpponentHealth(opponent.health);
 
       setShowResults(false);
+      setShowResultModal(false);
       setHasSubmitted(false);
       setOpponentHasSubmitted(false);
       setBothSubmitted(false);
       setSelectedProvince(null);
       setCurrentCulturalData(null);
       setCorrectAnswer("");
+      setCurrentRound(prev => prev + 1);
       selectedLayerRef.current = null;
     });
 
@@ -789,87 +795,23 @@ export default function GamePage() {
           </div>
         )}
 
-        {/* Results */}
-        {showResults && (
-          <div className="text-center mb-6">
-            <div className="bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded-lg">
-              <h3 className="font-bold text-lg mb-2">🎯 Results</h3>
-
-              {/* Correct Answer with Cultural Information */}
-              <div className="bg-blue-50 border border-blue-200 p-4 mb-4 rounded-lg">
-                <h4 className="font-bold text-blue-800 mb-2">
-                  ✅ Correct Answer: {correctAnswer}
-                </h4>
-                {currentCulturalData && (
-                  <div className="text-left">
-                    <p className="text-sm text-blue-700 mb-1">
-                      <strong>Cultural Element:</strong>{" "}
-                      {currentCulturalData.cultural_context}
-                    </p>
-                    <p className="text-sm text-blue-700 mb-1">
-                      <strong>Category:</strong>{" "}
-                      {currentCulturalData.cultural_category}
-                    </p>
-                    <p className="text-sm text-blue-600 italic">
-                      "
-                      {currentCulturalData.cultural_fun_fact ||
-                        currentCulturalData.query}
-                      "
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div
-                  className={`p-3 rounded transition-all ${
-                    selectedProvince?.name === correctAnswer
-                      ? "bg-green-100 border-2 border-green-300"
-                      : "bg-red-100 border-2 border-red-300"
-                  }`}
-                >
-                  <p className="font-medium">Your Answer:</p>
-                  <p className="text-lg font-bold">
-                    {selectedProvince?.name || "No selection"}
-                  </p>
-                  <p
-                    className={`text-sm font-bold ${
-                      selectedProvince?.name === correctAnswer
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {selectedProvince?.name === correctAnswer
-                      ? "✅ Correct!"
-                      : "❌ Wrong"}
-                  </p>
-                </div>
-                <div
-                  className={`p-3 rounded transition-all ${
-                    opponentProvince?.name === correctAnswer
-                      ? "bg-green-100 border-2 border-green-300"
-                      : "bg-red-100 border-2 border-red-300"
-                  }`}
-                >
-                  <p className="font-medium">Opponent's Answer:</p>
-                  <p className="text-lg font-bold text-blue-800">
-                    {opponentProvince?.name || "No selection"}
-                  </p>
-                  <p
-                    className={`text-sm font-bold ${
-                      opponentProvince?.name === correctAnswer
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {opponentProvince?.name === correctAnswer
-                      ? "✅ Correct!"
-                      : "❌ Wrong"}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Round Result Modal */}
+        {showResultModal && gameHistory.length > 0 && (
+          <RoundResultModal
+            isOpen={showResultModal}
+            roundNumber={currentRound}
+            correctAnswer={correctAnswer}
+            culturalData={currentCulturalData}
+            playerAnswer={selectedProvince?.name || "No selection"}
+            playerCorrect={selectedProvince?.name === correctAnswer}
+            opponentAnswer={opponentProvince?.name || "No selection"}
+            opponentCorrect={opponentProvince?.name === correctAnswer}
+            opponentLabel="Opponent"
+            playerHealth={playerHealth}
+            opponentHealth={opponentHealth}
+            onClose={() => setShowResultModal(false)}
+            onTimeComplete={() => setShowResultModal(false)}
+          />
         )}
 
         {/* Main Game Content - Map and Cultural Experience Side by Side */}

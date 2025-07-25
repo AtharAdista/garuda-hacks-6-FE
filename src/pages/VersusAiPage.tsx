@@ -8,6 +8,7 @@ import geoData from "../data/38ProvinsiIndonesia-Provinsi.json";
 
 import { provinceInfo, kodeToId } from "../data/provinceInfo";
 import CulturalDataDisplayVersusAi from "@/components/CulturalDataDisplayVersusAi";
+import RoundResultModal from "@/components/RoundResultModal";
 
 export default function VersusAiPage() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -23,6 +24,7 @@ export default function VersusAiPage() {
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState<"player" | "ai" | null>(null);
   const [currentRound, setCurrentRound] = useState(1);
+  const [showResultModal, setShowResultModal] = useState(false);
   const [gameResult, setGameResult] = useState<{
     playerGuess: string;
     aiGuess: string;
@@ -111,6 +113,7 @@ export default function VersusAiPage() {
 
   const startNewRound = () => {
     setCurrentRound((prev) => prev + 1);
+    setShowResultModal(false);
     resetGameRound();
   };
 
@@ -120,6 +123,7 @@ export default function VersusAiPage() {
     setGameOver(false);
     setWinner(null);
     setCurrentRound(1);
+    setShowResultModal(false);
     resetGameRound();
   };
 
@@ -197,6 +201,7 @@ export default function VersusAiPage() {
         aiCorrect,
         result: resultMessage,
       });
+      setShowResultModal(true);
 
       // Check if game is over
       if (newPlayerHealth === 0 || newOpponentHealth === 0) {
@@ -511,123 +516,36 @@ export default function VersusAiPage() {
           </div>
         )}
 
-        {/* Game Result Display */}
-        {gameResult && !isAiThinking && (
-          <div className="max-w-3xl mx-auto mb-6">
-            <div className="bg-white rounded-xl shadow-lg border border-rose-200 p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-                Round {currentRound - (gameOver ? 1 : 0)} Result
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                {/* Player Result */}
-                <div
-                  className={`p-4 rounded-lg border-2 ${
-                    gameResult.playerCorrect
-                      ? "bg-green-50 border-green-200"
-                      : "bg-red-50 border-red-200"
-                  }`}
-                >
-                  <h3 className="font-bold text-gray-800 mb-2">Your Answer</h3>
-                  <p className="text-lg font-semibold">
-                    {gameResult.playerGuess}
-                  </p>
-                  <p
-                    className={`text-sm font-bold ${
-                      gameResult.playerCorrect
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {gameResult.playerCorrect ? "✓ Correct" : "✗ Wrong"}
-                  </p>
-                </div>
-
-                {/* Correct Answer */}
-                <div className="p-4 rounded-lg bg-blue-50 border-2 border-blue-200">
-                  <h3 className="font-bold text-gray-800 mb-2">
-                    Correct Answer
-                  </h3>
-                  <p className="text-lg font-semibold text-blue-800">
-                    {gameResult.correctAnswer}
-                  </p>
-                  <p className="text-sm text-blue-600">🎯 Target Province</p>
-                </div>
-
-                {/* AI Result */}
-                <div
-                  className={`p-4 rounded-lg border-2 ${
-                    gameResult.aiCorrect
-                      ? "bg-green-50 border-green-200"
-                      : "bg-red-50 border-red-200"
-                  }`}
-                >
-                  <h3 className="font-bold text-gray-800 mb-2">AI Answer</h3>
-                  <p className="text-lg font-semibold">{gameResult.aiGuess}</p>
-                  <p
-                    className={`text-sm font-bold ${
-                      gameResult.aiCorrect ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    {gameResult.aiCorrect ? "✓ Correct" : "✗ Wrong"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Result Message */}
-              <div className="text-center mb-4">
-                <div
-                  className={`inline-block px-6 py-3 rounded-lg font-bold text-lg ${
-                    gameResult.result.includes("Both correct")
-                      ? "bg-yellow-100 text-yellow-800 border border-yellow-300"
-                      : gameResult.result.includes("You're correct")
-                      ? "bg-green-100 text-green-800 border border-green-300"
-                      : gameResult.result.includes("AI is correct")
-                      ? "bg-red-100 text-red-800 border border-red-300"
-                      : "bg-red-100 text-red-800 border border-red-300"
-                  }`}
-                >
-                  {gameResult.result}
-                </div>
-              </div>
-
-              {/* Health Status */}
-              <div className="flex justify-center gap-8 mb-4">
-                <div className="text-center">
-                  <p className="text-sm text-gray-600">Your Health</p>
-                  <p
-                    className={`text-2xl font-bold ${
-                      playerHealth <= 1 ? "text-red-600" : "text-rose-700"
-                    }`}
-                  >
-                    {"❤️".repeat(playerHealth)}
-                  </p>
-                </div>
-                <div className="text-center">
-                  <p className="text-sm text-gray-600">AI Health</p>
-                  <p
-                    className={`text-2xl font-bold ${
-                      opponentHealth <= 1 ? "text-red-600" : "text-blue-700"
-                    }`}
-                  >
-                    {"❤️".repeat(opponentHealth)}
-                  </p>
-                </div>
-              </div>
-
-              {/* Next Round Button */}
-              {!gameOver && (
-                <div className="text-center">
-                  <button
-                    onClick={startNewRound}
-                    className="bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600 transition-colors shadow-lg"
-                  >
-                    ▶️ Next Round
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+        {/* Round Result Modal */}
+        {showResultModal && gameResult && (
+          <RoundResultModal
+            isOpen={showResultModal}
+            roundNumber={currentRound - (gameOver ? 1 : 0)}
+            correctAnswer={gameResult.correctAnswer}
+            culturalData={culturalData}
+            playerAnswer={gameResult.playerGuess}
+            playerCorrect={gameResult.playerCorrect}
+            opponentAnswer={gameResult.aiGuess}
+            opponentCorrect={gameResult.aiCorrect}
+            opponentLabel="AI"
+            playerHealth={playerHealth}
+            opponentHealth={opponentHealth}
+            resultMessage={gameResult.result}
+            onClose={() => {
+              if (!gameOver) {
+                startNewRound();
+              } else {
+                setShowResultModal(false);
+              }
+            }}
+            onTimeComplete={() => {
+              if (!gameOver) {
+                startNewRound();
+              } else {
+                setShowResultModal(false);
+              }
+            }}
+          />
         )}
 
         {/* Submit Button */}
